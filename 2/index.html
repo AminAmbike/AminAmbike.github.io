@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYDE 572 · Assignment 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    chtml: { scale: 0.98 },
+    startup: { typeset: true }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --card: #ffffff;
+    --ink: #1d2330;
+    --ink-2: #4a4f5c;
+    --muted: #7a7e89;
+    --line: #e6e3dc;
+    --accent: #2a78d6;
+    --accent-2: #4a3aa7;
+    --orange: #eb6834;
+    --aqua: #1baf7a;
+    --tint: #eef4fc;
+    --hero-1: #121a2e;
+    --hero-2: #1e3160;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 Inter, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: radial-gradient(1200px 500px at 80% -10%, #2d4f9a 0%, transparent 60%),
+                linear-gradient(135deg, var(--hero-1), var(--hero-2));
+    color: #fff; padding: 64px 24px 72px; position: relative; overflow: hidden;
+  }
+  .hero svg.deco { position: absolute; right: -40px; top: 0; height: 100%; opacity: .22; }
+  .hero-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+  .crumbs { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #a9b8dc; }
+  .crumbs a { color: #cfdaf5; }
+  .hero h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.08; margin: 14px 0 14px; letter-spacing: -.01em; max-width: 820px;
+  }
+  .hero p.lede { font-size: 18px; color: #d5ddf0; max-width: 720px; margin: 0; }
+  .meta { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 26px; font-size: 14px; color: #b9c6e6; }
+  .meta b { color: #fff; font-weight: 600; }
+
+  .stats {
+    max-width: 1180px; margin: -38px auto 0; padding: 0 24px; position: relative;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .stat {
+    background: var(--card); border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: 0 1px 2px rgba(20,30,60,.06), 0 8px 24px rgba(20,30,60,.08);
+  }
+  .stat .k { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .stat .v { font-size: 26px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .stat .s { font-size: 13px; color: var(--ink-2); }
+
+  /* ---------- layout ---------- */
+  .layout { max-width: 1180px; margin: 0 auto; padding: 36px 24px 80px; display: grid;
+            grid-template-columns: 220px minmax(0, 1fr); gap: 40px; }
+  nav.toc { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+  nav.toc .t { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+  nav.toc a { display: block; color: var(--ink-2); padding: 5px 0 5px 12px; border-left: 2px solid var(--line); }
+  nav.toc a.sub { padding-left: 24px; font-size: 13.5px; color: var(--muted); }
+  nav.toc a:hover, nav.toc a.active { color: var(--accent); border-left-color: var(--accent); text-decoration: none; }
+
+  section.part { margin-bottom: 64px; }
+  .part-label { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: .1em;
+                text-transform: uppercase; color: var(--accent); background: var(--tint);
+                padding: 4px 10px; border-radius: 99px; }
+  h2 { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.15;
+       margin: 12px 0 8px; letter-spacing: -.01em; }
+  h3 { font-size: 21px; margin: 44px 0 10px; font-weight: 700; letter-spacing: -.005em; scroll-margin-top: 20px; }
+  h3 .num { color: var(--accent); margin-right: 8px; }
+  h4 { font-size: 16.5px; margin: 26px 0 6px; }
+  h5 { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 22px 0 8px; }
+  p { margin: 10px 0; }
+  .intro { font-size: 17.5px; color: var(--ink-2); max-width: 760px; }
+
+  .card { background: var(--card); border-radius: var(--radius); padding: 22px 26px; margin: 18px 0;
+          border: 1px solid var(--line); }
+  .callout { border-left: 4px solid var(--accent); background: var(--tint); padding: 14px 18px;
+             border-radius: 0 10px 10px 0; margin: 18px 0; }
+  .callout.green { border-color: var(--aqua); background: #eaf7f1; }
+  .callout.orange { border-color: var(--orange); background: #fdf0ea; }
+  .answer { display: flex; gap: 14px; flex-wrap: wrap; margin: 18px 0; }
+  .answer .box { flex: 1 1 240px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .answer .box .k { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .answer .box .v { font-size: 22px; font-weight: 700; }
+  .answer .box .e { font-size: 14px; color: var(--ink-2); }
+
+  .eq { overflow-x: auto; overflow-y: hidden; }
+  mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+
+  /* ---------- tables ---------- */
+  .tbl { overflow-x: auto; margin: 12px 0 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th { text-align: left; font-weight: 600; background: #f3f2ee; color: var(--ink-2); padding: 9px 12px;
+       border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f0eee9; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  table.num td { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  table.num td:first-child { font-family: Inter, sans-serif; font-size: 13.5px; font-weight: 500; }
+  tbody tr:hover td { background: #fafaf7; }
+
+  details.hand { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+  details.hand summary { cursor: pointer; padding: 14px 18px; list-style: none; font-size: 15px; }
+  details.hand summary::-webkit-details-marker { display: none; }
+  details.hand summary::before { content: "▸"; color: var(--accent); margin-right: 10px; display: inline-block; transition: transform .15s; }
+  details.hand[open] summary::before { transform: rotate(90deg); }
+  .hand-body { padding: 0 18px 16px; }
+  .pill { display: inline-block; font-weight: 700; background: #fdf0ea; color: #b8451a; border-radius: 6px; padding: 1px 8px; margin-right: 8px; font-family: "JetBrains Mono", monospace; font-size: 13.5px; }
+  .note { font-size: 14px; color: var(--ink-2); }
+
+  /* ---------- figures ---------- */
+  figure { margin: 22px 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 6px; }
+  figure a.zoom { display: block; cursor: zoom-in; }
+  figcaption { font-size: 14px; color: var(--ink-2); padding: 10px 4px 2px; }
+  figcaption b { color: var(--ink); }
+  .fig-narrow { max-width: 760px; }
+
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 -8px; }
+  .tabs button { font: 600 13.5px Inter, sans-serif; border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+                 padding: 7px 14px; border-radius: 99px; cursor: pointer; }
+  .tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tabfig { display: none; }
+  .tabfig.on { display: block; }
+
+  /* ---------- code ---------- */
+  details.code { margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; background: #fbfbfa; overflow: hidden; }
+  details.code summary { cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 14.5px; background: var(--card); }
+  details.code summary code { font-family: "JetBrains Mono", monospace; color: var(--accent-2); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font: 12.8px/1.55 "JetBrains Mono", ui-monospace, monospace; }
+  pre code.hljs { background: transparent; padding: 0; }
+  code.inline { font-family: "JetBrains Mono", monospace; font-size: 13.5px; background: #efede8; padding: 1px 6px; border-radius: 5px; }
+
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  main { min-width: 0; }
+  @media (max-width: 1200px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  ul.clean { padding-left: 20px; }
+  ul.clean li { margin: 6px 0; }
+
+  .print-only { display: none; }
+  footer { text-align: center; color: var(--muted); font-size: 13.5px; padding: 30px 20px 50px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { display: none; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .hero { padding: 44px 16px 64px; }
+    .layout { padding: 28px 16px 60px; }
+    .stats { padding: 0 16px; gap: 10px; }
+    .stat .v { font-size: 21px; }
+    .card { padding: 18px 16px; }
+  }
+  @media print {
+    body { background: #fff; font-size: 13px; }
+    .hero { padding: 36px 28px 56px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .stats { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .layout { grid-template-columns: 1fr; padding-top: 24px; }
+    nav.toc, .tabs, .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    table { font-size: 11px; } td, th { padding: 5px 7px; }
+    table.num td { font-size: 10.5px; }
+    .tabfig { display: block !important; }
+    figure, .tbl, .answer .box, .callout { break-inside: avoid; }
+    h3 { break-after: avoid; }
+    details.code pre { white-space: pre-wrap; font-size: 10px; }
+    th, .callout, .pill, .part-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+</style>
+<style>
+  table.wtable td:nth-child(2) { font-family: Inter, sans-serif; font-size: 13.5px; font-weight: 500; }
+  .wtable td.hl { background: #eaf7f1; font-weight: 600; }
+  tr.hl td { background: #eaf7f1 !important; }
+  .figrow3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .figrow3 figure { margin: 0; }
+  @media (max-width: 1100px) { .figrow3 { grid-template-columns: minmax(0, 1fr); } }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; font-size: 15px; }
+  .kv b { color: var(--ink); }
+  @media print { .figrow3 { grid-template-columns: minmax(0, 1fr); } .figrow3 figure { max-width: 620px; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="deco" viewBox="0 0 400 400" aria-hidden="true">
+    <path d="M10 330 C 80 300, 110 120, 170 170 S 260 330, 300 200 S 360 60, 395 90" fill="none" stroke="#9fc1ff" stroke-width="2.5"/>
+    <path d="M10 300 L 395 140" fill="none" stroke="#9fc1ff" stroke-width="1.2" opacity=".6"/>
+    <circle cx="60" cy="290" r="6" fill="#ff8a5c"/><circle cx="120" cy="210" r="6" fill="#ff8a5c"/>
+    <circle cx="180" cy="190" r="6" fill="#5fe0b0"/><circle cx="240" cy="270" r="6" fill="#ff8a5c"/>
+    <circle cx="300" cy="215" r="6" fill="#5fe0b0"/><circle cx="350" cy="110" r="6" fill="#ff8a5c"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="crumbs"><a href="../index.html">Portfolio</a> &nbsp;/&nbsp; SYDE 572 &nbsp;/&nbsp; Assignment 2</div>
+    <h1>Linear basis function regression on Boston housing</h1>
+    <p class="lede">Predicting the median house value of a town from 13 features with polynomial and Gaussian basis functions,
+      with and without L2 regularisation, and choosing the regularising constant by 10-fold cross-validation.
+      Every number on this page is produced by the Python code included below.</p>
+    <div class="meta">
+      <span>Course <b>SYDE 572</b></span>
+      <span>Author <b>Amin Ambike</b></span>
+      <span>Student ID <b>20998636</b></span>
+      <span>Code <b><a style="color:#fff" href="#code">Python 3 · NumPy · Matplotlib</a></b></span>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="k">(a) training RMS</div><div class="v">2.04 → 0.88</div><div class="s">degree 1 → 7, all 13 features</div></div>
+  <div class="stat"><div class="k">(b) weight on RM</div><div class="v">+4.196</div><div class="s">≈ $8,591 per extra room</div></div>
+  <div class="stat"><div class="k">(d) polynomial · CV choice</div><div class="v">λ = 10</div><div class="s">mean CV RMS 9.98</div></div>
+  <div class="stat"><div class="k">(f) Gaussian · CV choice</div><div class="v">λ = 0.01</div><div class="s">mean CV RMS 3.37</div></div>
+</div>
+
+<div class="layout">
+<nav class="toc">
+  <div class="t">Contents</div>
+  <a href="#setup">Set-up</a>
+  <a class="sub" href="#data">Data &amp; split</a>
+  <a class="sub" href="#model">Model &amp; solver</a>
+  <a href="#p1">Part 1 · Polynomial basis</a>
+  <a class="sub" href="#pa">(a) Degree 1 to 7</a>
+  <a class="sub" href="#pb">(b) Degree-1 weights</a>
+  <a class="sub" href="#pc">(c) One feature (ZN)</a>
+  <a class="sub" href="#pd">(d) Regularised, CV</a>
+  <a href="#p2">Part 2 · Gaussian basis</a>
+  <a class="sub" href="#pe">(e) K = 5 to 95</a>
+  <a class="sub" href="#pf">(f) Regularised, CV</a>
+  <a href="#code">Python code</a>
+  <a href="#conclusions">Conclusions</a>
+</nav>
+
+<main>
+<!-- ================================================================ SETUP -->
+<section class="part" id="setup">
+  <span class="part-label">Set-up</span>
+  <h2>Data, model and solver</h2>
+  <p class="intro">Both parts fit a model that is linear in its weights, \(y(\mathbf x, \mathbf w) = \mathbf w^\top \boldsymbol\phi(\mathbf x)\).
+    Only the basis \(\boldsymbol\phi\) and the penalty change from question to question, so one solver serves all six parts.</p>
+
+  <h3 id="data"><span class="num">0.1</span>Data and train/test split</h3>
+  <p>The Boston Housing data has 506 towns, 13 input features and the target <b>MEDV</b>, the median value of owner-occupied homes in $1000s.
+    As the handout specifies, the <b>first 100 rows</b> are the training set and the <b>remaining 406</b> are the test set.</p>
+  <div class="tbl"><table><thead><tr><th>#</th><th>feature</th><th>meaning</th><th>#</th><th>feature</th><th>meaning</th></tr></thead><tbody>
+  <tr><td>1</td><td><b>CRIM</b></td><td>per-capita crime rate</td><td>8</td><td><b>DIS</b></td><td>weighted distance to 5 employment centres</td></tr><tr><td>2</td><td><b>ZN</b></td><td>% residential land zoned for lots > 25,000 sq ft</td><td>9</td><td><b>RAD</b></td><td>index of access to radial highways</td></tr><tr><td>3</td><td><b>INDUS</b></td><td>% non-retail business acres</td><td>10</td><td><b>TAX</b></td><td>property-tax rate per $10,000</td></tr><tr><td>4</td><td><b>CHAS</b></td><td>Charles River dummy (1 = bounds river)</td><td>11</td><td><b>PTRATIO</b></td><td>pupil-teacher ratio</td></tr><tr><td>5</td><td><b>NOX</b></td><td>nitric oxides concentration (pp 10M)</td><td>12</td><td><b>B</b></td><td>1000(Bk − 0.63)²</td></tr><tr><td>6</td><td><b>RM</b></td><td>average rooms per dwelling</td><td>13</td><td><b>LSTAT</b></td><td>% lower-status population</td></tr><tr><td>7</td><td><b>AGE</b></td><td>% owner-occupied units built before 1940</td><td></td><td></td><td></td></tr>
+  </tbody></table></div>
+  <p><b>Normalisation.</b> Every feature is z-scored with the mean and standard deviation of the <b>training rows only</b>,
+    \(z_d = (x_d - \bar x_d)/s_d\), so no information from the test set enters the model. The same transform is then applied to the test rows.
+    Inside cross-validation it is recomputed from each fold's training rows. CHAS is 0 for all of the first 100 towns, so its standard deviation is 0;
+    it is given \(s_d = 1\), which leaves a column of zeros that receives zero weight.</p>
+  <div class="callout orange"><b>The split is not random.</b> The rows are grouped by area, and the first 100 are low-crime suburbs.
+    Their CRIM never exceeds 1.61, but 38% of the test towns are above that value, and the largest test value
+    (88.98) sits <b>229 training standard deviations</b> from the training mean. RAD (14.5 σ), B (14.1 σ), TAX (9.2 σ)
+    and NOX (8.6 σ) are also far outside the training range. Any model evaluated on this test set is <b>extrapolating</b>. This fact explains most of the results below.</div>
+
+  <h3 id="model"><span class="num">0.2</span>Model and solver</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent)">Polynomial basis (no cross terms)</h4>
+      <p class="eq">\[ \boldsymbol\phi(\mathbf z) = \big[1,\ z_1,\dots,z_D,\ z_1^2,\dots,z_D^2,\ \dots,\ z_1^M,\dots,z_D^M\big] \]</p>
+      <p>A degree-\(M\) model on \(D\) features has \(1 + DM\) weights: 14 for \(M=1\), up to 92 for \(M=7\).</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--accent-2)">Gaussian basis</h4>
+      <p class="eq">\[ \phi_0 = 1,\qquad \phi_j(\mathbf z) = \exp\!\left(-\frac{\lVert \mathbf z - \boldsymbol\mu_j\rVert^2}{2s^2}\right),\ j = 1..K \]</p>
+      <p>Centres \(\boldsymbol\mu_j\) are training points picked by a random permutation (seed 572). The width is \(s = 2\) in normalised units (see part e).</p>
+    </div>
+  </div>
+  <p>With design matrix \(\boldsymbol\Phi\) (one row per town), the regularised sum-of-squares error and its minimiser are</p>
+  <p class="eq">\[ E(\mathbf w) = \tfrac12\sum_{n=1}^{N} \big(t_n - \mathbf w^\top\boldsymbol\phi(\mathbf x_n)\big)^2 + \tfrac{\lambda}{2}\lVert\mathbf w\rVert^2
+     \quad\Longrightarrow\quad \mathbf w^* = \big(\lambda \mathbf I' + \boldsymbol\Phi^\top\boldsymbol\Phi\big)^{-1}\boldsymbol\Phi^\top\mathbf t , \]</p>
+  <p>where \(\mathbf I'\) is the identity with a 0 in the bias position, so the bias is not shrunk. For \(\lambda = 0\) the normal equations are often singular
+    (the constant CHAS column; RAD has only 6 distinct training values, so \(\text{RAD}^6\) is a combination of lower powers; ZN has only 12).
+    I therefore use the pseudo-inverse \(\mathbf w^* = \boldsymbol\Phi^{+}\mathbf t\), which gives the minimum-norm least-squares solution
+    (singular values below \(10^{-10}\sigma_{\max}\) are treated as zero). All errors are RMS, \(E_{\text{RMS}} = \sqrt{\tfrac1N\sum_n (y_n - t_n)^2}\), in $1000s.</p>
+  <div class="answer">
+    <div class="box"><div class="k">Training MEDV</div><div class="v">mean 22.31</div><div class="e">first 100 towns</div></div>
+    <div class="box"><div class="k">Test MEDV</div><div class="v">mean 22.59</div><div class="e">std 9.83, the RMS of always predicting the training mean (9.83)</div></div>
+  </div>
+</section>
+
+<!-- ================================================================ PART 1 -->
+<section class="part" id="p1">
+  <span class="part-label">Part one</span>
+  <h2>Polynomial basis functions</h2>
+  <p class="intro">Monomials of each single feature, with no cross terms, fitted by least squares on the first 100 towns.</p>
+
+  <h3 id="pa"><span class="num">(a)</span>Training and test error for degree 1 to 7</h3>
+  <figure class=""><a class="zoom" href="media/a_poly_errors.png" target="_blank"><img src="media/a_poly_errors.png" alt=""></a><figcaption><b>Left:</b> the required plot, RMS error against polynomial degree for the specified split (log scale; labels are the exact values). <b>Right:</b> for comparison only, the same experiment repeated with 100 <i>randomly chosen</i> training towns (median and inter-quartile range over 50 splits).</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>degree M</th><th>weights</th><th>rank of Φ</th><th>train RMS</th><th>test RMS</th><th>random split: train (median)</th><th>random split: test (median)</th></tr></thead>
+  <tbody><tr><td>1</td><td>14</td><td>13</td><td>2.037</td><td>36.44</td><td>4.31</td><td>5.26</td></tr><tr><td>2</td><td>27</td><td>25</td><td>1.578</td><td>1,097</td><td>3.05</td><td>5.10</td></tr><tr><td>3</td><td>40</td><td>37</td><td>1.449</td><td>4.9 × 10<sup>4</sup></td><td>2.68</td><td>12.70</td></tr><tr><td>4</td><td>53</td><td>48</td><td>1.270</td><td>2.2 × 10<sup>7</sup></td><td>2.19</td><td>58.07</td></tr><tr><td>5</td><td>66</td><td>54</td><td>1.097</td><td>1.8 × 10<sup>10</sup></td><td>1.76</td><td>640</td></tr><tr><td>6</td><td>79</td><td>60</td><td>1.073</td><td>5.0 × 10<sup>12</sup></td><td>1.25</td><td>8,889</td></tr><tr><td>7</td><td>92</td><td>66</td><td>0.881</td><td>6.9 × 10<sup>15</sup></td><td>0.90</td><td>7.1 × 10<sup>4</sup></td></tr></tbody></table></div>
+  <div class="callout">
+    <b>What the plot shows.</b>
+    <ul class="clean">
+      <li><b>Training error falls every time the degree rises</b> (2.04 → 0.88). The degree-\(M\) basis contains the degree-\((M-1)\) basis,
+        so least squares can never do worse on the data it was fitted to.</li>
+      <li><b>Test error rises by orders of magnitude</b>, from 36.4 at \(M=1\) to about \(7\times10^{15}\) at \(M=7\).
+        Even the linear model is worse than predicting the training mean (9.83). This is overfitting made far worse by extrapolation.
+        The test towns sit far outside the training range (CRIM up to 229 σ), so a term \(w\,z^M\) fitted on training values with \(|z|\) of a few units is evaluated at
+        \(|z| \approx 229\). With \(M = 7\) that term is multiplied by about \(10^{16}\).</li>
+      <li>With 100 training points and up to 92 weights (rank 66), the high-degree models have almost as many free parameters as data points.
+        They fit the noise in the training set, and the coefficients that do this take extreme values outside the training range.</li>
+      <li>The right panel isolates the overfitting effect. When the training towns are drawn at random, the test error has the textbook shape:
+        it is lowest at \(M = 2\) (5.10, slightly better than 5.26 for \(M=1\)) and then grows as the
+        model starts to fit noise. So with representative data a mild quadratic term helps; with this split no polynomial generalises.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>polynomial_regression</code>: parts (a) and (b)</summary><pre><code class="language-python">def polynomial_regression(degrees=range(1, 8), features=None):
+    &quot;&quot;&quot;
+    Fit an unregularised polynomial of each degree on the first 100 towns
+    and report training and test RMS error.
+    `features` selects columns (default: all 13).
+    Returns a dict with the degrees, the two error curves and the weights.
+    &quot;&quot;&quot;
+    X_tr, t_tr, X_te, t_te = train_test_split()
+    if features is not None:
+        X_tr, X_te = X_tr[:, features], X_te[:, features]
+    Z_tr, Z_te, mu, sd = normalize(X_tr, X_te)
+
+    out = {&quot;degree&quot;: [], &quot;train_rms&quot;: [], &quot;test_rms&quot;: [], &quot;weights&quot;: {}}
+    for M in degrees:
+        Phi_tr = design_polynomial(Z_tr, M)
+        Phi_te = design_polynomial(Z_te, M)
+        w = fit_least_squares(Phi_tr, t_tr)
+        out[&quot;degree&quot;].append(M)
+        out[&quot;train_rms&quot;].append(rms(Phi_tr, w, t_tr))
+        out[&quot;test_rms&quot;].append(rms(Phi_te, w, t_te))
+        out[&quot;weights&quot;][M] = w
+    out[&quot;mu&quot;], out[&quot;sd&quot;] = mu, sd
+    return out</code></pre></details>
+
+  <h3 id="pb"><span class="num">(b)</span>Learned weights of the degree-1 model</h3>
+  <p>The degree-1 model is \(y = w_0 + \sum_{d=1}^{13} w_d z_d\) with z-scored inputs, so each \(w_d\) is the change in MEDV ($1000s) when feature \(d\)
+    increases by one <i>training</i> standard deviation, with all other features held fixed. Dividing by \(s_d\) converts it back to raw units.</p>
+  <figure class="fig-narrow"><a class="zoom" href="media/b_weights.png" target="_blank"><img src="media/b_weights.png" alt=""></a><figcaption>Weights of the degree-1 model trained on the first 100 towns. The two features asked about are in green.</figcaption></figure>
+  <div class="tbl"><table class="num wtable"><thead><tr><th>weight</th><th>feature</th><th>w (normalised)</th><th>w / s<sub>d</sub> (per raw unit)</th><th>corr. with MEDV (train)</th><th>w if fitted on all 506 towns</th></tr></thead>
+  <tbody><tr><td>w<sub>0</sub></td><td>bias</td><td><b>22.3090</b></td><td>n/a</td><td>n/a</td><td>n/a</td></tr><tr><td>w<sub>1</sub></td><td>1 · CRIM</td><td><b>−1.3380</b></td><td>−3.4559</td><td>−0.57</td><td>−0.928</td></tr><tr><td>w<sub>2</sub></td><td>2 · ZN</td><td><b>+0.1230</b></td><td>+0.0054</td><td>+0.26</td><td>+1.082</td></tr><tr><td>w<sub>3</sub></td><td>3 · INDUS</td><td><b>−0.5311</b></td><td>−0.1688</td><td>−0.46</td><td>+0.141</td></tr><tr><td>w<sub>4</sub></td><td>4 · CHAS</td><td><b>+0.0000</b></td><td>+0.0000</td><td>n/a (constant)</td><td>+0.682</td></tr><tr><td>w<sub>5</sub></td><td>5 · NOX</td><td><b>+1.0027</b></td><td>+21.5154</td><td>−0.48</td><td>−2.057</td></tr><tr class="hl"><td>w<sub>6</sub></td><td>6 · RM</td><td><b>+4.1956</b></td><td>+8.5910</td><td>+0.85</td><td>+2.674</td></tr><tr><td>w<sub>7</sub></td><td>7 · AGE</td><td><b>−2.1663</b></td><td>−0.0792</td><td>−0.48</td><td>+0.019</td></tr><tr class="hl"><td>w<sub>8</sub></td><td>8 · DIS</td><td><b>+0.0107</b></td><td>+0.0076</td><td>+0.16</td><td>−3.104</td></tr><tr><td>w<sub>9</sub></td><td>9 · RAD</td><td><b>−0.1938</b></td><td>−0.1399</td><td>−0.30</td><td>+2.662</td></tr><tr><td>w<sub>10</sub></td><td>10 · TAX</td><td><b>−0.3486</b></td><td>−0.0076</td><td>−0.37</td><td>−2.077</td></tr><tr><td>w<sub>11</sub></td><td>11 · PTRATIO</td><td><b>+0.2613</b></td><td>+0.1546</td><td>−0.35</td><td>−2.061</td></tr><tr><td>w<sub>12</sub></td><td>12 · B</td><td><b>+0.1811</b></td><td>+0.0066</td><td>+0.35</td><td>+0.849</td></tr><tr><td>w<sub>13</sub></td><td>13 · LSTAT</td><td><b>+0.1488</b></td><td>+0.0262</td><td>−0.74</td><td>−3.744</td></tr></tbody></table></div>
+  <p class="note">Indexing: with the bias as \(w_0\), the 6th feature (RM) has weight \(w_6\) and the 8th (DIS) has \(w_8\). Counting the features from 0, as the handout does
+    when it calls the RM weight \(w_5\), these are the "5th" and "7th" features; both readings refer to RM and DIS.</p>
+  <div class="answer">
+    <div class="box"><div class="k">RM · average rooms per dwelling</div><div class="v">w = +4.1956</div>
+      <div class="e">+$4,196 per training s.d. (0.488 rooms), i.e. ≈ +$8,591 per extra room</div></div>
+    <div class="box"><div class="k">DIS · distance to employment centres</div><div class="v">w = +0.0107</div>
+      <div class="e">≈ +$11 per training s.d. (1.40 units); effectively zero</div></div>
+  </div>
+  <div class="callout green">
+    <b>Are these two weights reasonable?</b>
+    <ul class="clean">
+      <li><b>RM: yes.</b> It is the largest weight in the model and is positive. Larger dwellings are worth more, and RM is the feature most strongly correlated with
+        MEDV in the training towns (r = +0.85). About $8,600 per extra room (in 1970s dollars, with a training mean of $22,300) is a plausible size. On all 506 towns the
+        same model gives +2.67 per s.d., so the sign and magnitude agree.</li>
+      <li><b>DIS: plausible in magnitude, but it should not be read as "distance does not matter".</b> On its own DIS is only weakly related to price in the training towns
+        (r = +0.16). It is also correlated with NOX (r = −0.48), INDUS and AGE: towns near the employment centres are older, more industrial and more polluted. Once those features are
+        in the model, DIS adds almost nothing, so least squares gives it about zero weight. When the model is fitted on all 506 towns, which include the inner-city
+        tracts, DIS gets a clearly negative weight (−3.10). Holding pollution, age and the other features fixed, a longer commute lowers value.
+        The first 100 suburbs simply do not contain enough variation in DIS to estimate this effect.</li>
+      <li><b>Other weights show the same limitation.</b> NOX (+1.00), PTRATIO (+0.26) and LSTAT (+0.15) have the opposite sign to their correlation with MEDV.
+        With 100 strongly correlated samples, individual weights are poorly determined, even though the overall fit is good (training RMS 2.04).
+        CHAS gets exactly 0 because it never varies in the training set.</li>
+    </ul>
+  </div>
+
+  <h3 id="pc"><span class="num">(c)</span>Polynomial regression on one feature (ZN)</h3>
+  <p>The handout asks for feature \(X_n(:,2)\). In 1-based (MATLAB) indexing this is the 2nd column, <b>ZN</b>, the share of residential land zoned for large lots.
+    ZN is normalised with the training mean and standard deviation (12.39 and 22.85), the polynomial is fitted in normalised units, and the curve is drawn
+    against raw ZN. ZN is unusual: 63% of the training towns have ZN = 0, and the training set has only <b>12 distinct values</b>
+    (thin vertical lines), with a gap between 28 and 75.</p>
+  <div class="figrow3">
+    <figure class=""><a class="zoom" href="media/c_deg1.png" target="_blank"><img src="media/c_deg1.png" alt=""></a><figcaption><b>Degree 1 (low order).</b> A gentle upward trend: larger lot zoning goes with higher values. Train 5.70, test 9.35.</figcaption></figure>
+    <figure class=""><a class="zoom" href="media/c_deg4.png" target="_blank"><img src="media/c_deg4.png" alt=""></a><figcaption><b>Degree 4 (moderate).</b> Smooth, nearly the same predictions and errors as degree 1 (train 5.65, test 9.39).</figcaption></figure>
+    <figure class=""><a class="zoom" href="media/c_deg10.png" target="_blank"><img src="media/c_deg10.png" alt=""></a><figcaption><b>Degree 10 (high order).</b> 11 weights for 12 distinct x-values: the curve chases the group means and dives to −334 in the empty gaps. Test 65.4.</figcaption></figure>
+  </div>
+  <figure class=""><a class="zoom" href="media/c_gallery.png" target="_blank"><img src="media/c_gallery.png" alt=""></a><figcaption>All degrees from 1 to 10 on the same axes (curve clipped to the plotted range). Degrees 1 to 6 are almost indistinguishable; from degree 7 the curve oscillates wildly between the training values.</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>degree</th><th>train RMS</th><th>test RMS</th><th>range of the fitted curve on [0, 100]</th></tr></thead><tbody><tr><td>1</td><td>5.695</td><td>9.35</td><td>21.5 to 28.2</td></tr><tr><td>2</td><td>5.670</td><td>9.45</td><td>21.7 to 30.4</td></tr><tr><td>3</td><td>5.665</td><td>9.43</td><td>21.7 to 32.0</td></tr><tr><td>4</td><td>5.651</td><td>9.39</td><td>21.0 to 33.2</td></tr><tr><td>5</td><td>5.648</td><td>9.38</td><td>20.7 to 32.6</td></tr><tr><td>6</td><td>5.647</td><td>9.36</td><td>21.0 to 32.5</td></tr><tr><td>7</td><td>5.501</td><td>10.42</td><td>11.4 to 56.8</td></tr><tr><td>8</td><td>5.477</td><td>18.64</td><td>−8.1 to 115.2</td></tr><tr><td>9</td><td>5.473</td><td>15.34</td><td>−19.1 to 92.1</td></tr><tr><td>10</td><td>5.437</td><td>65.39</td><td>−334.2 to 35.7</td></tr></tbody></table></div>
+  <div class="callout">
+    <b>Comments.</b>
+    <ul class="clean">
+      <li><b>ZN on its own predicts little.</b> Even the best fit only reduces the training RMS from 5.90 (the training standard deviation) to about 5.4. Most of the spread is
+        <i>vertical</i>: 63 training towns share ZN = 0 but their prices range from 13 to 44. No function of ZN can separate them. The lowest possible training RMS
+        (a curve through the mean of each of the 12 ZN groups) is 5.41, and degree 10 already reaches 5.44.</li>
+      <li><b>Low orders are stable.</b> Degrees 1 to 6 give test RMS 9.35 to 9.45, essentially the mean-prediction baseline. The trend is real but weak.</li>
+      <li><b>High orders overfit in the gaps.</b> Once the number of weights approaches the number of distinct ZN values, the polynomial is pinned at the 12 training values and
+        free everywhere else. Between 30 and 75, where there are no training towns but many test towns (ZN = 30, 33, 34, 35, 40, 45, 52.5, 55, 60, 70), it swings far outside
+        the range of house prices. This is why the test error rises to 18.6 (degree 8) and 65.4 (degree 10) while the training error barely changes.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>polynomial_regression_1d_vis</code>: part (c)</summary><pre><code class="language-python">def polynomial_regression_1d_vis(degree, feature=1, n_grid=400):
+    &quot;&quot;&quot;
+    Polynomial regression on ONE feature (default column 2 = ZN, i.e.
+    Xn(:,2) in 1-based indexing).  Returns everything needed to plot the
+    training points, the test points and the learned curve, in the
+    original (un-normalised) units on the x-axis.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    x = X[:, feature:feature + 1]
+    x_tr, x_te, t_tr, t_te = x[:N_TRAIN], x[N_TRAIN:], t[:N_TRAIN], t[N_TRAIN:]
+    z_tr, z_te, mu, sd = normalize(x_tr, x_te)
+
+    w = fit_least_squares(design_polynomial(z_tr, degree), t_tr)
+    grid = np.linspace(x.min(), x.max(), n_grid)[:, None]
+    curve = design_polynomial((grid - mu) / sd, degree) @ w
+    return {
+        &quot;degree&quot;: degree, &quot;feature&quot;: FEATURES[feature], &quot;w&quot;: w,
+        &quot;x_train&quot;: x_tr.ravel(), &quot;t_train&quot;: t_tr,
+        &quot;x_test&quot;: x_te.ravel(), &quot;t_test&quot;: t_te,
+        &quot;grid&quot;: grid.ravel(), &quot;curve&quot;: curve,
+        &quot;train_rms&quot;: rms(design_polynomial(z_tr, degree), w, t_tr),
+        &quot;test_rms&quot;: rms(design_polynomial(z_te, degree), w, t_te),
+    }</code></pre></details>
+
+  <h3 id="pd"><span class="num">(d)</span>L2-regularised degree-8 polynomial, λ chosen by 10-fold cross-validation</h3>
+  <p>A degree-8 polynomial on ZN (9 weights) is fitted with each \(\lambda \in \{0, 0.01, 0.1, 1, 10, 100, 1000\}\). The first 100 towns are split into 10 contiguous folds of 10.
+    Each fold is held out once: the model is trained on the other 90 (normalised with their own statistics) and the RMS error on the held-out 10 is recorded. The 10 validation
+    errors are then averaged.</p>
+  <figure class="fig-narrow"><a class="zoom" href="media/d_poly_reg_cv.png" target="_blank"><img src="media/d_poly_reg_cv.png" alt=""></a><figcaption>Average validation RMS against λ on a log axis (purple), the 10 individual folds (faint), the mean training RMS (blue) and the unregularised result as a red dashed baseline. The y-axis is logarithmic because fold 6 is orders of magnitude worse than the others.</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>λ</th><th>mean train RMS (CV)</th><th>mean validation RMS (CV)</th><th>refit on 100: train RMS</th><th>refit on 100: test RMS</th></tr></thead><tbody><tr><td>0</td><td>5.429</td><td>1.8 × 10<sup>5</sup></td><td>5.477</td><td>18.64</td></tr><tr><td>0.01</td><td>5.488</td><td>904</td><td>5.528</td><td>9.83</td></tr><tr><td>0.1</td><td>5.516</td><td>110</td><td>5.556</td><td>10.02</td></tr><tr><td>1</td><td>5.550</td><td>70.02</td><td>5.587</td><td>9.45</td></tr><tr class="hl"><td>10</td><td>5.598</td><td>9.98</td><td>5.641</td><td>9.35</td></tr><tr><td>100</td><td>5.618</td><td>12.45</td><td>5.664</td><td>9.48</td></tr><tr><td>1000</td><td>5.624</td><td>17.79</td><td>5.669</td><td>9.50</td></tr></tbody></table></div>
+  <div class="answer">
+    <div class="box"><div class="k">Chosen regularising constant</div><div class="v">λ = 10</div><div class="e">lowest mean validation RMS: 9.98</div></div>
+    <div class="box"><div class="k">No regularisation</div><div class="v">1.8 × 10<sup>5</sup></div><div class="e">mean validation RMS, reported separately (red line)</div></div>
+  </div>
+  <div class="callout">
+    <b>Comments.</b>
+    <ul class="clean">
+      <li><b>I would choose λ = 10.</b> It gives the lowest average validation error. Smaller λ lets the degree-8 curve oscillate; larger λ (100, 1000) flattens it too much and the error rises again (12.5, 17.8).</li>
+      <li><b>One fold dominates the average.</b> Fold 6 (towns 51 to 60) contains ZN = 75, 85, 90 and 100. With those towns removed, the remaining 90 training towns contain no ZN value above 80,
+        so the held-out towns at 85 to 100 are pure extrapolation for the degree-8 polynomial. Its error there is 1.8 × 10<sup>6</sup> without regularisation and 47.6 at λ = 10.
+        In the other nine folds the curves are much more similar (validation RMS 1.5 to 10.3 at λ = 10). Regularisation matters most where the data are sparse.</li>
+      <li><b>The choice is confirmed on the test set.</b> Refitting on all 100 towns, λ = 10 gives the lowest test RMS of the grid (9.35, against 18.64 unregularised).
+        This matches the best low-order polynomial in part (c): the penalty lets a degree-8 model behave like a smooth, low-order one.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>polynomial_regression_reg</code>: part (d)</summary><pre><code class="language-python">def polynomial_regression_reg(degree=8, feature=1, lambdas=LAMBDAS, k=10):
+    &quot;&quot;&quot;
+    L2-regularised degree-8 polynomial on the 2nd feature, first 100 towns.
+    10-fold cross-validation picks lambda.  Normalisation is recomputed
+    inside every fold from that fold&#x27;s training rows only.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    x, tt = X[:N_TRAIN, feature:feature + 1], t[:N_TRAIN]
+
+    val_err = np.zeros((len(lambdas), k))
+    trn_err = np.zeros((len(lambdas), k))
+    for f, (trn, val) in enumerate(kfold_indices(N_TRAIN, k)):
+        z_trn, z_val, _, _ = normalize(x[trn], x[val])
+        P_trn = design_polynomial(z_trn, degree)
+        P_val = design_polynomial(z_val, degree)
+        for i, lam in enumerate(lambdas):
+            w = fit_ridge(P_trn, tt[trn], lam)
+            trn_err[i, f] = rms(P_trn, w, tt[trn])
+            val_err[i, f] = rms(P_val, w, tt[val])
+
+    mean_val = val_err.mean(axis=1)
+    best = lambdas[int(np.argmin(mean_val))]
+    return {&quot;lambdas&quot;: list(lambdas), &quot;val_err&quot;: val_err, &quot;trn_err&quot;: trn_err,
+            &quot;mean_val&quot;: mean_val, &quot;mean_trn&quot;: trn_err.mean(axis=1), &quot;best_lambda&quot;: best}</code></pre></details>
+</section>
+
+<!-- ================================================================ PART 2 -->
+<section class="part" id="p2">
+  <span class="part-label">Part two</span>
+  <h2>Gaussian basis functions</h2>
+  <p class="intro">Radial basis functions centred on randomly chosen training towns, using all 13 normalised features.</p>
+
+  <h3 id="pe"><span class="num">(e)</span>Training and test error for K = 5, 15, …, 95 basis functions</h3>
+  <p>A single random permutation of the 100 training towns is drawn, and the first \(K\) towns in it are used as centres, so the centre sets are nested as \(K\) grows.
+    No regularisation is used. <b>Width.</b> The median distance between two normalised training towns is 4.62. With \(s = 2\), a centre at that typical distance gives an
+    activation of \(e^{-4.62^2/8} \approx 0.07\). Each basis function therefore covers a neighbourhood of towns without every function overlapping all the others.
+    Varying the width does not change the conclusions (\(s = 1\): test RMS 9.8 to 11.9; \(s = 4\): 8.0 to 9.7 for \(K \le 85\)).</p>
+  <figure class=""><a class="zoom" href="media/e_gauss_errors.png" target="_blank"><img src="media/e_gauss_errors.png" alt=""></a><figcaption><b>Left:</b> RMS error against the number of basis functions (seed 572), with the 10th to 90th percentile of the test error over 30 other random centre choices. <b>Right:</b> the largest basis activation each town receives (all 100 training towns as centres). Most test towns are far from every centre.</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>K</th><th>train RMS</th><th>test RMS</th><th>test RMS, median of 30 draws</th><th>test RMS, 10th to 90th pct.</th></tr></thead><tbody><tr><td>5</td><td>3.941</td><td>9.55</td><td>9.76</td><td>9.46 to 10.15</td></tr><tr><td>15</td><td>3.115</td><td>9.42</td><td>9.38</td><td>9.19 to 10.22</td></tr><tr><td>25</td><td>2.716</td><td>9.68</td><td>9.36</td><td>9.15 to 10.05</td></tr><tr><td>35</td><td>2.546</td><td>9.68</td><td>9.28</td><td>9.10 to 10.13</td></tr><tr><td>45</td><td>2.117</td><td>9.12</td><td>9.25</td><td>9.08 to 10.71</td></tr><tr><td>55</td><td>2.019</td><td>9.14</td><td>9.24</td><td>9.09 to 10.69</td></tr><tr><td>65</td><td>1.864</td><td>9.16</td><td>9.32</td><td>9.08 to 10.04</td></tr><tr><td>75</td><td>0.897</td><td>13.71</td><td>9.31</td><td>9.03 to 11.42</td></tr><tr><td>85</td><td>0.449</td><td>10.87</td><td>9.49</td><td>9.01 to 12.55</td></tr><tr><td>95</td><td>0.094</td><td>13.36</td><td>11.39</td><td>9.02 to 22.86</td></tr></tbody></table></div>
+  <div class="callout">
+    <b>What the plot shows.</b>
+    <ul class="clean">
+      <li><b>Training error falls steadily</b> from 3.94 (K = 5) to 0.09 (K = 95). With 96 weights for 100 points the model nearly interpolates the training set.</li>
+      <li><b>Test error hardly moves</b>: 9.1 to 9.7 for \(K \le 65\), close to the 9.83 of always predicting the training mean. Above that, this draw gets worse
+        (13.7, 10.9, 13.4). Over 30 draws the median stays near 9.3 up to K = 85 and rises to 11.4 at K = 95, while the spread between draws widens sharply
+        (the 90th percentile reaches 22.9 at K = 95). As K approaches the number of training points, the result depends heavily on which towns are chosen as centres. This is the overfitting regime.</li>
+      <li><b>Why the test error is so flat.</b> A Gaussian basis function decays to zero away from its centre. 42% of the test towns have
+        activation below 0.01 for <i>every</i> centre (median best activation 0.056, against 0.89 for training towns). For those towns
+        \(y \approx w_0\), so the model falls back to roughly the average price. Unlike the polynomial it cannot explode; it just has nothing to say about towns unlike the
+        training suburbs. This is the same distribution-shift problem as in part (a), but it appears as a bounded error instead of an exploding one.</li>
+      <li>For large K the remaining test towns that <i>are</i> near a centre get worse predictions, because the near-interpolating weights are large and alternate in sign,
+        which is the usual sign of overfitting.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>gaussian_regression</code>: part (e)</summary><pre><code class="language-python">def gaussian_regression(Ks=range(5, 100, 10), s=2.0, seed=572):
+    &quot;&quot;&quot;
+    Gaussian RBF regression on all 13 (normalised) features.
+    Centres: a random permutation of the 100 training points, then the
+    first K of that permutation (so the centre sets are nested in K).
+    No regularisation.
+    &quot;&quot;&quot;
+    X_tr, t_tr, X_te, t_te = train_test_split()
+    Z_tr, Z_te, _, _ = normalize(X_tr, X_te)
+    perm = np.random.default_rng(seed).permutation(N_TRAIN)
+
+    out = {&quot;K&quot;: [], &quot;train_rms&quot;: [], &quot;test_rms&quot;: [], &quot;s&quot;: s, &quot;seed&quot;: seed}
+    for K in Ks:
+        C = Z_tr[perm[:K]]
+        Phi_tr = design_gaussian(Z_tr, C, s)
+        Phi_te = design_gaussian(Z_te, C, s)
+        w = fit_least_squares(Phi_tr, t_tr)
+        out[&quot;K&quot;].append(K)
+        out[&quot;train_rms&quot;].append(rms(Phi_tr, w, t_tr))
+        out[&quot;test_rms&quot;].append(rms(Phi_te, w, t_te))
+    return out</code></pre></details>
+
+  <h3 id="pf"><span class="num">(f)</span>L2-regularised Gaussian regression (K = 90), λ chosen by 10-fold cross-validation</h3>
+  <p>All 13 features, \(K = 90\) basis functions and \(s = 2\). The same 10 contiguous folds are used. Each fold has exactly 90 training towns, so the 90 centres are those
+    training towns in random order. The held-out towns are never centres.</p>
+  <figure class="fig-narrow"><a class="zoom" href="media/f_gauss_reg_cv.png" target="_blank"><img src="media/f_gauss_reg_cv.png" alt=""></a><figcaption>Average validation RMS against λ on a log axis (purple), individual folds (faint), mean training RMS (blue) and the unregularised baseline (red dashed).</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>λ</th><th>mean train RMS (CV)</th><th>mean validation RMS (CV)</th><th>refit on 100: train RMS</th><th>refit on 100: test RMS</th></tr></thead><tbody><tr><td>0</td><td>0.000</td><td>9.29</td><td>0.307</td><td>11.64</td></tr><tr class="hl"><td>0.01</td><td>0.965</td><td>3.37</td><td>1.077</td><td>10.54</td></tr><tr><td>0.1</td><td>1.268</td><td>3.53</td><td>1.350</td><td>9.90</td></tr><tr><td>1</td><td>1.808</td><td>3.62</td><td>1.896</td><td>9.46</td></tr><tr><td>10</td><td>3.198</td><td>4.10</td><td>3.199</td><td>9.51</td></tr><tr><td>100</td><td>4.783</td><td>4.90</td><td>4.772</td><td>9.68</td></tr><tr><td>1000</td><td>5.676</td><td>5.54</td><td>5.693</td><td>9.81</td></tr></tbody></table></div>
+  <div class="answer">
+    <div class="box"><div class="k">Chosen regularising constant</div><div class="v">λ = 0.01</div><div class="e">lowest mean validation RMS: 3.37</div></div>
+    <div class="box"><div class="k">No regularisation</div><div class="v">9.29</div><div class="e">mean validation RMS, reported separately (red line); training RMS 0.00</div></div>
+  </div>
+  <div class="callout">
+    <b>Comments.</b>
+    <ul class="clean">
+      <li><b>I would choose λ = 0.01.</b> Without regularisation the model has 91 weights for 90 training towns and interpolates them exactly (training RMS 0.00).
+        The validation error is then 9.29, no better than guessing the mean. A small penalty, λ = 0.01, cuts the validation error to 3.37.</li>
+      <li>From λ = 0.01 upward the validation error rises steadily (3.53, 3.62, 4.10, 4.90, 5.54) while the training error rises to meet it. At λ = 1000 the two curves meet and the model underfits.
+        The validation curve is fairly flat between 0.01 and 1, so any λ in that range is a reasonable choice. 0.01 is the minimiser on this grid.</li>
+      <li><b>Cross-validation measures in-distribution error.</b> Inside the first 100 towns, held-out suburbs are close to the training suburbs, so the regularised Gaussian model
+        predicts them well (about $3,400 RMS, far better than any polynomial in Part 1). On the 406 test towns the same model scores 10.5, and the best λ on the test set would be
+        λ = 1 (9.46). Cross-validation assumes the validation and test data come from the same distribution. That assumption does not hold for this split.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>gaussian_regression_reg</code>: part (f)</summary><pre><code class="language-python">def gaussian_regression_reg(K=90, s=2.0, lambdas=LAMBDAS, k=10, seed=572):
+    &quot;&quot;&quot;
+    L2-regularised Gaussian RBF regression, all features, first 100 towns,
+    K = 90 basis functions, lambda chosen by 10-fold cross-validation.
+    In each fold the K centres are a random permutation of that fold&#x27;s
+    training rows (a fold has exactly 90 training rows, so every one of
+    them becomes a centre) and the validation rows are never used as centres.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    Xa, ta = X[:N_TRAIN], t[:N_TRAIN]
+    rng = np.random.default_rng(seed)
+
+    val_err = np.zeros((len(lambdas), k))
+    trn_err = np.zeros((len(lambdas), k))
+    for f, (trn, val) in enumerate(kfold_indices(N_TRAIN, k)):
+        Z_trn, Z_val, _, _ = normalize(Xa[trn], Xa[val])
+        C = Z_trn[rng.permutation(len(trn))[:K]]
+        P_trn = design_gaussian(Z_trn, C, s)
+        P_val = design_gaussian(Z_val, C, s)
+        for i, lam in enumerate(lambdas):
+            w = fit_ridge(P_trn, ta[trn], lam)
+            trn_err[i, f] = rms(P_trn, w, ta[trn])
+            val_err[i, f] = rms(P_val, w, ta[val])
+
+    mean_val = val_err.mean(axis=1)
+    best = lambdas[int(np.argmin(mean_val))]
+    return {&quot;lambdas&quot;: list(lambdas), &quot;val_err&quot;: val_err, &quot;trn_err&quot;: trn_err,
+            &quot;mean_val&quot;: mean_val, &quot;mean_trn&quot;: trn_err.mean(axis=1), &quot;best_lambda&quot;: best}</code></pre></details>
+</section>
+
+<!-- ================================================================ CODE -->
+<section class="part" id="code">
+  <span class="part-label">Code</span>
+  <h2>Python code</h2>
+  <p>Two files. <code class="inline">regression.py</code> contains the data handling, the two bases, the solvers and the five functions the handout asks for.
+    <code class="inline">make_figures.py</code> runs every experiment, draws every figure on this page and writes <code class="inline">results.json</code>.
+    Run <code class="inline">python3 make_figures.py</code> with <code class="inline">housing.data</code> in the same folder. Source files:
+    <a href="code/regression.py">regression.py</a> · <a href="code/make_figures.py">make_figures.py</a> · <a href="code/results.json">results.json</a>.</p>
+  <details class="code"><summary><code>regression.py</code>: complete module</summary><pre><code class="language-python">&quot;&quot;&quot;
+SYDE 572 - Assignment 2
+Linear basis function regression on the Boston Housing data.
+
+Every model here is linear in its weights,  y(x, w) = w^T phi(x),
+so the only thing that changes between parts is the basis phi:
+
+    polynomial :  phi(x) = [1, x_1, ..., x_D, x_1^2, ..., x_D^2, ..., x_D^M]
+    gaussian   :  phi(x) = [1, exp(-||x - mu_j||^2 / (2 s^2)) for j = 1..K]
+
+and whether an L2 penalty  (lambda / 2) ||w||^2  is added to the
+sum-of-squares error.
+
+Functions required by the handout (Python names use underscores):
+    polynomial_regression          part (a), (b)
+    polynomial_regression_1d_vis   part (c)
+    polynomial_regression_reg      part (d)
+    gaussian_regression            part (e)
+    gaussian_regression_reg        part (f)
+&quot;&quot;&quot;
+import os
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(HERE, &quot;housing.data&quot;)
+
+FEATURES = [&quot;CRIM&quot;, &quot;ZN&quot;, &quot;INDUS&quot;, &quot;CHAS&quot;, &quot;NOX&quot;, &quot;RM&quot;, &quot;AGE&quot;,
+            &quot;DIS&quot;, &quot;RAD&quot;, &quot;TAX&quot;, &quot;PTRATIO&quot;, &quot;B&quot;, &quot;LSTAT&quot;]
+N_TRAIN = 100
+LAMBDAS = [0, 0.01, 0.1, 1, 10, 100, 1000]
+RCOND = 1e-10          # singular values below RCOND * s_max are treated as zero
+
+
+# ------------------------------------------------------------------ data ----
+def load_data(path=DATA_FILE):
+    &quot;&quot;&quot;Return X (506 x 13 features) and t (506 median values, in $1000s).&quot;&quot;&quot;
+    data = np.loadtxt(path)
+    return data[:, :13], data[:, 13]
+
+
+def normalize(X_train, X_other=None):
+    &quot;&quot;&quot;
+    Z-score each feature with the mean and standard deviation of the
+    TRAINING points only, so nothing about the test set leaks into the model.
+    A feature that is constant in the training set (CHAS is 0 for all of the
+    first 100 towns) gets sd = 1 so we never divide by zero.
+    &quot;&quot;&quot;
+    mu = X_train.mean(axis=0)
+    sd = X_train.std(axis=0)
+    sd = np.where(sd == 0, 1.0, sd)
+    Z_train = (X_train - mu) / sd
+    if X_other is None:
+        return Z_train, mu, sd
+    return Z_train, (X_other - mu) / sd, mu, sd
+
+
+def train_test_split(n_train=N_TRAIN):
+    &quot;&quot;&quot;First n_train rows are training data, the rest are test data.&quot;&quot;&quot;
+    X, t = load_data()
+    return X[:n_train], t[:n_train], X[n_train:], t[n_train:]
+
+
+# ---------------------------------------------------------------- bases ----
+def design_polynomial(Z, degree):
+    &quot;&quot;&quot;
+    Monomials of each single variable, no cross terms:
+        [1 | Z | Z^2 | ... | Z^degree]
+    For D features the matrix has 1 + D * degree columns.
+    &quot;&quot;&quot;
+    cols = [np.ones((Z.shape[0], 1))]
+    for k in range(1, degree + 1):
+        cols.append(Z ** k)
+    return np.hstack(cols)
+
+
+def design_gaussian(Z, centres, s):
+    &quot;&quot;&quot;[1 | exp(-||z - mu_j||^2 / (2 s^2))]  for every centre mu_j.&quot;&quot;&quot;
+    sq = ((Z[:, None, :] - centres[None, :, :]) ** 2).sum(axis=2)
+    return np.hstack([np.ones((Z.shape[0], 1)), np.exp(-sq / (2.0 * s * s))])
+
+
+# --------------------------------------------------------------- solvers ----
+def fit_least_squares(Phi, t):
+    &quot;&quot;&quot;
+    Unregularised solution  w = Phi^+ t  (Moore-Penrose pseudo-inverse).
+    When Phi^T Phi is singular (e.g. a constant column, or a feature with
+    fewer distinct values than the degree) this returns the minimum-norm
+    weight vector instead of failing.
+    &quot;&quot;&quot;
+    return np.linalg.pinv(Phi, rcond=RCOND) @ t
+
+
+def fit_ridge(Phi, t, lam):
+    &quot;&quot;&quot;
+    Minimise  1/2 sum (t_n - w^T phi_n)^2 + lam/2 ||w||^2.
+    Setting the gradient to zero gives  (lam I&#x27; + Phi^T Phi) w = Phi^T t.
+    I&#x27; is the identity with a 0 in the bias position, so the bias is not
+    shrunk towards zero (shrinking it would only pull every prediction
+    towards 0 instead of towards the mean house price).
+    &quot;&quot;&quot;
+    if lam == 0:
+        return fit_least_squares(Phi, t)
+    reg = lam * np.eye(Phi.shape[1])
+    reg[0, 0] = 0.0
+    return np.linalg.solve(reg + Phi.T @ Phi, Phi.T @ t)
+
+
+def rms(Phi, w, t):
+    &quot;&quot;&quot;Root-mean-square error  sqrt( 1/N sum (y_n - t_n)^2 ).&quot;&quot;&quot;
+    return float(np.sqrt(np.mean((Phi @ w - t) ** 2)))
+
+
+def kfold_indices(n, k=10):
+    &quot;&quot;&quot;Contiguous folds: fold i validates on rows [i*n/k, (i+1)*n/k).&quot;&quot;&quot;
+    edges = np.linspace(0, n, k + 1).astype(int)
+    for i in range(k):
+        val = np.arange(edges[i], edges[i + 1])
+        trn = np.setdiff1d(np.arange(n), val)
+        yield trn, val
+
+
+# ============================================================ part (a) ====
+def polynomial_regression(degrees=range(1, 8), features=None):
+    &quot;&quot;&quot;
+    Fit an unregularised polynomial of each degree on the first 100 towns
+    and report training and test RMS error.
+    `features` selects columns (default: all 13).
+    Returns a dict with the degrees, the two error curves and the weights.
+    &quot;&quot;&quot;
+    X_tr, t_tr, X_te, t_te = train_test_split()
+    if features is not None:
+        X_tr, X_te = X_tr[:, features], X_te[:, features]
+    Z_tr, Z_te, mu, sd = normalize(X_tr, X_te)
+
+    out = {&quot;degree&quot;: [], &quot;train_rms&quot;: [], &quot;test_rms&quot;: [], &quot;weights&quot;: {}}
+    for M in degrees:
+        Phi_tr = design_polynomial(Z_tr, M)
+        Phi_te = design_polynomial(Z_te, M)
+        w = fit_least_squares(Phi_tr, t_tr)
+        out[&quot;degree&quot;].append(M)
+        out[&quot;train_rms&quot;].append(rms(Phi_tr, w, t_tr))
+        out[&quot;test_rms&quot;].append(rms(Phi_te, w, t_te))
+        out[&quot;weights&quot;][M] = w
+    out[&quot;mu&quot;], out[&quot;sd&quot;] = mu, sd
+    return out
+
+
+# ============================================================ part (c) ====
+def polynomial_regression_1d_vis(degree, feature=1, n_grid=400):
+    &quot;&quot;&quot;
+    Polynomial regression on ONE feature (default column 2 = ZN, i.e.
+    Xn(:,2) in 1-based indexing).  Returns everything needed to plot the
+    training points, the test points and the learned curve, in the
+    original (un-normalised) units on the x-axis.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    x = X[:, feature:feature + 1]
+    x_tr, x_te, t_tr, t_te = x[:N_TRAIN], x[N_TRAIN:], t[:N_TRAIN], t[N_TRAIN:]
+    z_tr, z_te, mu, sd = normalize(x_tr, x_te)
+
+    w = fit_least_squares(design_polynomial(z_tr, degree), t_tr)
+    grid = np.linspace(x.min(), x.max(), n_grid)[:, None]
+    curve = design_polynomial((grid - mu) / sd, degree) @ w
+    return {
+        &quot;degree&quot;: degree, &quot;feature&quot;: FEATURES[feature], &quot;w&quot;: w,
+        &quot;x_train&quot;: x_tr.ravel(), &quot;t_train&quot;: t_tr,
+        &quot;x_test&quot;: x_te.ravel(), &quot;t_test&quot;: t_te,
+        &quot;grid&quot;: grid.ravel(), &quot;curve&quot;: curve,
+        &quot;train_rms&quot;: rms(design_polynomial(z_tr, degree), w, t_tr),
+        &quot;test_rms&quot;: rms(design_polynomial(z_te, degree), w, t_te),
+    }
+
+
+# ============================================================ part (d) ====
+def polynomial_regression_reg(degree=8, feature=1, lambdas=LAMBDAS, k=10):
+    &quot;&quot;&quot;
+    L2-regularised degree-8 polynomial on the 2nd feature, first 100 towns.
+    10-fold cross-validation picks lambda.  Normalisation is recomputed
+    inside every fold from that fold&#x27;s training rows only.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    x, tt = X[:N_TRAIN, feature:feature + 1], t[:N_TRAIN]
+
+    val_err = np.zeros((len(lambdas), k))
+    trn_err = np.zeros((len(lambdas), k))
+    for f, (trn, val) in enumerate(kfold_indices(N_TRAIN, k)):
+        z_trn, z_val, _, _ = normalize(x[trn], x[val])
+        P_trn = design_polynomial(z_trn, degree)
+        P_val = design_polynomial(z_val, degree)
+        for i, lam in enumerate(lambdas):
+            w = fit_ridge(P_trn, tt[trn], lam)
+            trn_err[i, f] = rms(P_trn, w, tt[trn])
+            val_err[i, f] = rms(P_val, w, tt[val])
+
+    mean_val = val_err.mean(axis=1)
+    best = lambdas[int(np.argmin(mean_val))]
+    return {&quot;lambdas&quot;: list(lambdas), &quot;val_err&quot;: val_err, &quot;trn_err&quot;: trn_err,
+            &quot;mean_val&quot;: mean_val, &quot;mean_trn&quot;: trn_err.mean(axis=1), &quot;best_lambda&quot;: best}
+
+
+# ============================================================ part (e) ====
+def gaussian_regression(Ks=range(5, 100, 10), s=2.0, seed=572):
+    &quot;&quot;&quot;
+    Gaussian RBF regression on all 13 (normalised) features.
+    Centres: a random permutation of the 100 training points, then the
+    first K of that permutation (so the centre sets are nested in K).
+    No regularisation.
+    &quot;&quot;&quot;
+    X_tr, t_tr, X_te, t_te = train_test_split()
+    Z_tr, Z_te, _, _ = normalize(X_tr, X_te)
+    perm = np.random.default_rng(seed).permutation(N_TRAIN)
+
+    out = {&quot;K&quot;: [], &quot;train_rms&quot;: [], &quot;test_rms&quot;: [], &quot;s&quot;: s, &quot;seed&quot;: seed}
+    for K in Ks:
+        C = Z_tr[perm[:K]]
+        Phi_tr = design_gaussian(Z_tr, C, s)
+        Phi_te = design_gaussian(Z_te, C, s)
+        w = fit_least_squares(Phi_tr, t_tr)
+        out[&quot;K&quot;].append(K)
+        out[&quot;train_rms&quot;].append(rms(Phi_tr, w, t_tr))
+        out[&quot;test_rms&quot;].append(rms(Phi_te, w, t_te))
+    return out
+
+
+# ============================================================ part (f) ====
+def gaussian_regression_reg(K=90, s=2.0, lambdas=LAMBDAS, k=10, seed=572):
+    &quot;&quot;&quot;
+    L2-regularised Gaussian RBF regression, all features, first 100 towns,
+    K = 90 basis functions, lambda chosen by 10-fold cross-validation.
+    In each fold the K centres are a random permutation of that fold&#x27;s
+    training rows (a fold has exactly 90 training rows, so every one of
+    them becomes a centre) and the validation rows are never used as centres.
+    &quot;&quot;&quot;
+    X, t = load_data()
+    Xa, ta = X[:N_TRAIN], t[:N_TRAIN]
+    rng = np.random.default_rng(seed)
+
+    val_err = np.zeros((len(lambdas), k))
+    trn_err = np.zeros((len(lambdas), k))
+    for f, (trn, val) in enumerate(kfold_indices(N_TRAIN, k)):
+        Z_trn, Z_val, _, _ = normalize(Xa[trn], Xa[val])
+        C = Z_trn[rng.permutation(len(trn))[:K]]
+        P_trn = design_gaussian(Z_trn, C, s)
+        P_val = design_gaussian(Z_val, C, s)
+        for i, lam in enumerate(lambdas):
+            w = fit_ridge(P_trn, ta[trn], lam)
+            trn_err[i, f] = rms(P_trn, w, ta[trn])
+            val_err[i, f] = rms(P_val, w, ta[val])
+
+    mean_val = val_err.mean(axis=1)
+    best = lambdas[int(np.argmin(mean_val))]
+    return {&quot;lambdas&quot;: list(lambdas), &quot;val_err&quot;: val_err, &quot;trn_err&quot;: trn_err,
+            &quot;mean_val&quot;: mean_val, &quot;mean_trn&quot;: trn_err.mean(axis=1), &quot;best_lambda&quot;: best}
+
+
+if __name__ == &quot;__main__&quot;:
+    a = polynomial_regression()
+    for M, tr, te in zip(a[&quot;degree&quot;], a[&quot;train_rms&quot;], a[&quot;test_rms&quot;]):
+        print(f&quot;degree {M}:  train RMS {tr:8.3f}   test RMS {te:.4g}&quot;)
+    d = polynomial_regression_reg()
+    print(&quot;poly reg   mean validation RMS:&quot;, np.round(d[&quot;mean_val&quot;], 3), &quot; best lambda:&quot;, d[&quot;best_lambda&quot;])
+    e = gaussian_regression()
+    for K, tr, te in zip(e[&quot;K&quot;], e[&quot;train_rms&quot;], e[&quot;test_rms&quot;]):
+        print(f&quot;K = {K:2d}:  train RMS {tr:6.3f}   test RMS {te:6.3f}&quot;)
+    g = gaussian_regression_reg()
+    print(&quot;gauss reg  mean validation RMS:&quot;, np.round(g[&quot;mean_val&quot;], 3), &quot; best lambda:&quot;, g[&quot;best_lambda&quot;])
+</code></pre></details>
+  <details class="code"><summary><code>make_figures.py</code>: experiments and figures</summary><pre><code class="language-python">&quot;&quot;&quot;
+SYDE 572 - Assignment 2
+Runs every experiment, saves every figure on the project page to ../media/
+and writes results.json with all the numbers quoted in the write-up.
+
+    python3 make_figures.py
+&quot;&quot;&quot;
+import json
+import os
+
+import numpy as np
+import matplotlib
+matplotlib.use(&quot;Agg&quot;)
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator, FixedFormatter
+
+from regression import (FEATURES, LAMBDAS, N_TRAIN, load_data, normalize,
+                        design_polynomial, design_gaussian, fit_least_squares,
+                        fit_ridge, rms, polynomial_regression,
+                        polynomial_regression_1d_vis, polynomial_regression_reg,
+                        gaussian_regression, gaussian_regression_reg)
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+MEDIA = os.path.join(HERE, &quot;..&quot;, &quot;media&quot;)
+os.makedirs(MEDIA, exist_ok=True)
+
+# ---------------------------------------------------------------- style ----
+INK = &quot;#1d2330&quot;
+MUTED = &quot;#6b6f7a&quot;
+GRID = &quot;#e6e4df&quot;
+SURFACE = &quot;#fcfcfb&quot;
+BLUE = &quot;#2a78d6&quot;      # training
+ORANGE = &quot;#eb6834&quot;    # test
+VIOLET = &quot;#4a3aa7&quot;    # validation / model
+AQUA = &quot;#1baf7a&quot;      # chosen value
+RED = &quot;#e34948&quot;
+LIGHT = &quot;#c9c6bf&quot;
+
+plt.rcParams.update({
+    &quot;font.family&quot;: [&quot;Inter&quot;, &quot;Avenir Next&quot;, &quot;DejaVu Sans&quot;],
+    &quot;mathtext.fontset&quot;: &quot;stixsans&quot;,
+    &quot;font.size&quot;: 10.5,
+    &quot;axes.titlesize&quot;: 12,
+    &quot;axes.titleweight&quot;: &quot;semibold&quot;,
+    &quot;axes.titlelocation&quot;: &quot;left&quot;,
+    &quot;axes.titlepad&quot;: 10,
+    &quot;axes.labelcolor&quot;: INK,
+    &quot;axes.edgecolor&quot;: LIGHT,
+    &quot;axes.linewidth&quot;: 0.8,
+    &quot;axes.facecolor&quot;: SURFACE,
+    &quot;figure.facecolor&quot;: SURFACE,
+    &quot;axes.grid&quot;: True,
+    &quot;grid.color&quot;: GRID,
+    &quot;grid.linewidth&quot;: 0.7,
+    &quot;axes.spines.top&quot;: False,
+    &quot;axes.spines.right&quot;: False,
+    &quot;xtick.color&quot;: MUTED,
+    &quot;ytick.color&quot;: MUTED,
+    &quot;text.color&quot;: INK,
+    &quot;legend.frameon&quot;: False,
+    &quot;legend.fontsize&quot;: 9.5,
+    &quot;savefig.dpi&quot;: 200,
+    &quot;savefig.bbox&quot;: &quot;tight&quot;,
+    &quot;savefig.facecolor&quot;: SURFACE,
+})
+
+
+def save(fig, name):
+    fig.savefig(os.path.join(MEDIA, name))
+    plt.close(fig)
+    print(&quot;saved&quot;, name)
+
+
+def fmt_big(v):
+    &quot;&quot;&quot;Readable label for errors that range from 1 to 10^16.&quot;&quot;&quot;
+    if v &lt; 100:
+        return f&quot;{v:.2f}&quot;
+    if v &lt; 1e4:
+        return f&quot;{v:,.0f}&quot;
+    e = int(np.floor(np.log10(v)))
+    return f&quot;{v / 10**e:.1f}e{e}&quot;
+
+
+X_ALL, T_ALL = load_data()
+RESULTS = {}
+
+# ========================================================= part (a) =======
+a = polynomial_regression()
+RESULTS[&quot;a&quot;] = {&quot;degree&quot;: a[&quot;degree&quot;], &quot;train_rms&quot;: a[&quot;train_rms&quot;], &quot;test_rms&quot;: a[&quot;test_rms&quot;]}
+
+# For context: the same experiment with 100 RANDOM training towns
+# (50 different random splits, median and inter-quartile range).
+rand_tr, rand_te = [], []
+for seed in range(50):
+    p = np.random.default_rng(seed).permutation(len(T_ALL))
+    tr, te = p[:N_TRAIN], p[N_TRAIN:]
+    Ztr, Zte, _, _ = normalize(X_ALL[tr], X_ALL[te])
+    r_tr, r_te = [], []
+    for M in a[&quot;degree&quot;]:
+        w = fit_least_squares(design_polynomial(Ztr, M), T_ALL[tr])
+        r_tr.append(rms(design_polynomial(Ztr, M), w, T_ALL[tr]))
+        r_te.append(rms(design_polynomial(Zte, M), w, T_ALL[te]))
+    rand_tr.append(r_tr)
+    rand_te.append(r_te)
+rand_tr, rand_te = np.array(rand_tr), np.array(rand_te)
+RESULTS[&quot;a_random_split&quot;] = {
+    &quot;train_median&quot;: np.median(rand_tr, 0).tolist(),
+    &quot;test_median&quot;: np.median(rand_te, 0).tolist(),
+    &quot;test_q25&quot;: np.percentile(rand_te, 25, 0).tolist(),
+    &quot;test_q75&quot;: np.percentile(rand_te, 75, 0).tolist(),
+}
+
+# how far outside the training range the test towns are, per feature
+Z_tr, Z_te, mu, sd = normalize(X_ALL[:N_TRAIN], X_ALL[N_TRAIN:])
+RESULTS[&quot;test_max_abs_z&quot;] = dict(zip(FEATURES, np.abs(Z_te).max(0).round(2).tolist()))
+
+fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), gridspec_kw={&quot;wspace&quot;: 0.28})
+ax = axes[0]
+deg = a[&quot;degree&quot;]
+ax.semilogy(deg, a[&quot;train_rms&quot;], &quot;-o&quot;, color=BLUE, lw=2, ms=6, label=&quot;training RMS (first 100 towns)&quot;)
+ax.semilogy(deg, a[&quot;test_rms&quot;], &quot;-o&quot;, color=ORANGE, lw=2, ms=6, label=&quot;test RMS (remaining 406 towns)&quot;)
+for M, v in zip(deg, a[&quot;test_rms&quot;]):
+    ax.annotate(fmt_big(v), (M, v), textcoords=&quot;offset points&quot;, xytext=(0, 8),
+                ha=&quot;center&quot;, fontsize=8.5, color=ORANGE)
+for M, v in zip(deg, a[&quot;train_rms&quot;]):
+    ax.annotate(f&quot;{v:.2f}&quot;, (M, v), textcoords=&quot;offset points&quot;, xytext=(0, -15),
+                ha=&quot;center&quot;, fontsize=8.5, color=BLUE)
+ax.axhline(np.std(T_ALL[N_TRAIN:]), color=MUTED, lw=1, ls=&quot;--&quot;)
+ax.text(7.35, np.std(T_ALL[N_TRAIN:]) * 1.35, &quot;predict-the-mean\nbaseline (9.83)&quot;, fontsize=8.5,
+        color=MUTED, ha=&quot;right&quot;)
+ax.set_xlabel(&quot;polynomial degree M&quot;)
+ax.set_ylabel(&quot;RMS error ($1000s, log scale)&quot;)
+ax.set_title(&quot;(a) Train vs test error, specified split&quot;)
+ax.set_ylim(0.03, 1e18)
+ax.set_xticks(deg)
+ax.legend(loc=&quot;upper left&quot;)
+
+ax = axes[1]
+ax.fill_between(deg, RESULTS[&quot;a_random_split&quot;][&quot;test_q25&quot;], RESULTS[&quot;a_random_split&quot;][&quot;test_q75&quot;],
+                color=ORANGE, alpha=0.15, lw=0, label=&quot;test RMS, inter-quartile range&quot;)
+ax.semilogy(deg, RESULTS[&quot;a_random_split&quot;][&quot;train_median&quot;], &quot;-o&quot;, color=BLUE, lw=2, ms=6,
+            label=&quot;training RMS (median)&quot;)
+ax.semilogy(deg, RESULTS[&quot;a_random_split&quot;][&quot;test_median&quot;], &quot;-o&quot;, color=ORANGE, lw=2, ms=6,
+            label=&quot;test RMS (median)&quot;)
+best = int(np.argmin(RESULTS[&quot;a_random_split&quot;][&quot;test_median&quot;]))
+ax.scatter([deg[best]], [RESULTS[&quot;a_random_split&quot;][&quot;test_median&quot;][best]], s=170,
+           facecolor=&quot;none&quot;, edgecolor=AQUA, lw=2, zorder=5)
+ax.annotate(f&quot;lowest test error\nM = {deg[best]}&quot;, (deg[best], RESULTS[&quot;a_random_split&quot;][&quot;test_median&quot;][best]),
+            textcoords=&quot;offset points&quot;, xytext=(10, 42), ha=&quot;left&quot;, fontsize=8.5, color=AQUA)
+ax.set_xlabel(&quot;polynomial degree M&quot;)
+ax.set_ylabel(&quot;RMS error ($1000s, log scale)&quot;)
+ax.set_title(&quot;Context: 100 random training towns (50 splits)&quot;)
+ax.set_xticks(deg)
+ax.legend(loc=&quot;upper left&quot;)
+save(fig, &quot;a_poly_errors.png&quot;)
+
+# ========================================================= part (b) =======
+w1 = a[&quot;weights&quot;][1]
+RESULTS[&quot;b&quot;] = {
+    &quot;bias&quot;: float(w1[0]),
+    &quot;weights&quot;: {n: float(v) for n, v in zip(FEATURES, w1[1:])},
+    &quot;per_unit&quot;: {n: float(v / s) for n, v, s in zip(FEATURES, w1[1:], a[&quot;sd&quot;])},
+    &quot;train_mean&quot;: dict(zip(FEATURES, a[&quot;mu&quot;].tolist())),
+    &quot;train_sd&quot;: dict(zip(FEATURES, a[&quot;sd&quot;].tolist())),
+    &quot;train_corr_with_medv&quot;: {n: (float(np.corrcoef(X_ALL[:N_TRAIN, i], T_ALL[:N_TRAIN])[0, 1])
+                                 if a[&quot;sd&quot;][i] != 1.0 or FEATURES[i] != &quot;CHAS&quot; else 0.0)
+                             for i, n in enumerate(FEATURES)},
+}
+# the same degree-1 model fitted on all 506 towns, for comparison
+Z_all, _, _ = normalize(X_ALL)
+w_all = fit_least_squares(design_polynomial(Z_all, 1), T_ALL)
+RESULTS[&quot;b&quot;][&quot;all_506_weights&quot;] = {n: float(v) for n, v in zip(FEATURES, w_all[1:])}
+
+fig, ax = plt.subplots(figsize=(8.6, 4.6))
+order = np.arange(len(FEATURES))[::-1]
+vals = w1[1:]
+colors = [AQUA if FEATURES[i] in (&quot;RM&quot;, &quot;DIS&quot;) else (BLUE if vals[i] &gt;= 0 else ORANGE) for i in range(13)]
+ax.barh(order, vals, color=colors, height=0.62)
+for y, i in zip(order, range(13)):
+    v = vals[i]
+    ax.text(v + (0.08 if v &gt;= 0 else -0.08), y, f&quot;{v:+.3f}&quot;, va=&quot;center&quot;,
+            ha=&quot;left&quot; if v &gt;= 0 else &quot;right&quot;, fontsize=8.8, color=INK)
+ax.set_yticks(order)
+ax.set_yticklabels([f&quot;{n}  (feature {i + 1})&quot; for i, n in enumerate(FEATURES)])
+ax.axvline(0, color=MUTED, lw=0.9)
+ax.set_xlim(-3.2, 5.6)
+ax.set_xlabel(&quot;weight ($1000s per one training standard deviation of the feature)&quot;)
+ax.set_title(f&quot;(b) Degree-1 weights  (bias w0 = {w1[0]:.3f})&quot;)
+ax.grid(axis=&quot;y&quot;, visible=False)
+save(fig, &quot;b_weights.png&quot;)
+
+# ========================================================= part (c) =======
+RESULTS[&quot;c&quot;] = {}
+vis = {}
+for M in range(1, 11):
+    v = polynomial_regression_1d_vis(M)
+    vis[M] = v
+    RESULTS[&quot;c&quot;][M] = {&quot;train_rms&quot;: v[&quot;train_rms&quot;], &quot;test_rms&quot;: v[&quot;test_rms&quot;],
+                       &quot;curve_min&quot;: float(v[&quot;curve&quot;].min()), &quot;curve_max&quot;: float(v[&quot;curve&quot;].max())}
+ZN_TRAIN_VALUES = np.unique(X_ALL[:N_TRAIN, 1])
+RESULTS[&quot;c_zn_train_values&quot;] = ZN_TRAIN_VALUES.tolist()
+RESULTS[&quot;c_zn_test_values&quot;] = np.unique(X_ALL[N_TRAIN:, 1]).tolist()
+RESULTS[&quot;c_zn_zero_fraction_train&quot;] = float(np.mean(X_ALL[:N_TRAIN, 1] == 0))
+
+
+def vis_plot(ax, v, ylim=(-5, 60), legend=True, small=False):
+    ax.scatter(v[&quot;x_test&quot;], v[&quot;t_test&quot;], s=14 if not small else 6, color=ORANGE, alpha=0.35,
+               lw=0, label=&quot;test towns&quot;)
+    ax.scatter(v[&quot;x_train&quot;], v[&quot;t_train&quot;], s=26 if not small else 10, color=BLUE, alpha=0.85,
+               edgecolor=&quot;white&quot;, lw=0.5, label=&quot;training towns&quot;)
+    y = np.clip(v[&quot;curve&quot;], ylim[0] - 50, ylim[1] + 50)
+    ax.plot(v[&quot;grid&quot;], y, color=VIOLET, lw=2.2 if not small else 1.6, label=f&quot;degree-{v[&#x27;degree&#x27;]} fit&quot;)
+    for z in ZN_TRAIN_VALUES:
+        ax.axvline(z, color=GRID, lw=0.8, zorder=0)
+    ax.set_ylim(*ylim)
+    ax.set_xlim(-3, 103)
+    if legend:
+        ax.legend(loc=&quot;upper left&quot;, ncol=3)
+
+
+for M in (1, 4, 10):
+    v = vis[M]
+    fig, ax = plt.subplots(figsize=(6.4, 4.2))
+    vis_plot(ax, v)
+    ax.set_xlabel(&quot;ZN  (% of residential land zoned for lots &gt; 25,000 sq ft)&quot;)
+    ax.set_ylabel(&quot;MEDV  ($1000s)&quot;)
+    ax.set_title(f&quot;(c) Degree {M}:  train RMS {v[&#x27;train_rms&#x27;]:.2f},  test RMS {v[&#x27;test_rms&#x27;]:.2f}&quot;)
+    if v[&quot;curve&quot;].min() &lt; -5 or v[&quot;curve&quot;].max() &gt; 60:
+        ax.text(0.98, 0.04, f&quot;curve range {v[&#x27;curve&#x27;].min():.0f} to {v[&#x27;curve&#x27;].max():.0f}\n(clipped to the axes)&quot;,
+                transform=ax.transAxes, ha=&quot;right&quot;, fontsize=8.5, color=VIOLET)
+    save(fig, f&quot;c_deg{M}.png&quot;)
+
+fig, axes = plt.subplots(2, 5, figsize=(14, 5.4), sharex=True, sharey=True,
+                         gridspec_kw={&quot;wspace&quot;: 0.08, &quot;hspace&quot;: 0.32})
+for M, ax in zip(range(1, 11), axes.ravel()):
+    v = vis[M]
+    vis_plot(ax, v, legend=False, small=True)
+    ax.set_title(f&quot;M = {M}   test {fmt_big(v[&#x27;test_rms&#x27;])}&quot;, fontsize=10.5)
+for ax in axes[1]:
+    ax.set_xlabel(&quot;ZN&quot;)
+for ax in axes[:, 0]:
+    ax.set_ylabel(&quot;MEDV&quot;)
+save(fig, &quot;c_gallery.png&quot;)
+
+# ========================================================= part (d) =======
+d = polynomial_regression_reg()
+RESULTS[&quot;d&quot;] = {&quot;lambdas&quot;: d[&quot;lambdas&quot;], &quot;mean_val&quot;: d[&quot;mean_val&quot;].tolist(),
+                &quot;mean_trn&quot;: d[&quot;mean_trn&quot;].tolist(), &quot;val_err&quot;: d[&quot;val_err&quot;].tolist(),
+                &quot;best_lambda&quot;: d[&quot;best_lambda&quot;],
+                &quot;median_val&quot;: np.median(d[&quot;val_err&quot;], 1).tolist()}
+RESULTS[&quot;d_fold6_zn&quot;] = X_ALL[50:60, 1].tolist()
+
+# refit on all 100 towns with the chosen lambda and score the 406 test towns
+x_tr, x_te = X_ALL[:N_TRAIN, 1:2], X_ALL[N_TRAIN:, 1:2]
+z_tr, z_te, _, _ = normalize(x_tr, x_te)
+P_tr, P_te = design_polynomial(z_tr, 8), design_polynomial(z_te, 8)
+RESULTS[&quot;d_test&quot;] = {}
+for lam in LAMBDAS:
+    w = fit_ridge(P_tr, T_ALL[:N_TRAIN], lam)
+    RESULTS[&quot;d_test&quot;][str(lam)] = {&quot;train_rms&quot;: rms(P_tr, w, T_ALL[:N_TRAIN]),
+                                   &quot;test_rms&quot;: rms(P_te, w, T_ALL[N_TRAIN:])}
+
+
+def cv_plot(res, title, fname, note_fold=None, best_xy=(14, -38)):
+    lams = np.array(res[&quot;lambdas&quot;][1:], dtype=float)
+    vals = res[&quot;val_err&quot;][1:]
+    mean_v = res[&quot;mean_val&quot;][1:]
+    fig, ax = plt.subplots(figsize=(7.6, 4.5))
+    for f in range(vals.shape[1]):
+        ax.semilogx(lams, vals[:, f], color=VIOLET, alpha=0.16, lw=1, zorder=1)
+    ax.semilogx([], [], color=VIOLET, alpha=0.3, lw=1, label=&quot;individual folds&quot;)
+    ax.semilogx(lams, res[&quot;mean_trn&quot;][1:], &quot;-o&quot;, color=BLUE, lw=1.6, ms=5, label=&quot;mean training RMS&quot;)
+    ax.semilogx(lams, mean_v, &quot;-o&quot;, color=VIOLET, lw=2.4, ms=7, label=&quot;mean validation RMS (10 folds)&quot;)
+    base = res[&quot;mean_val&quot;][0]
+    ax.axhline(base, color=RED, ls=&quot;--&quot;, lw=1.4, label=f&quot;λ = 0 baseline: {fmt_big(base)}&quot;)
+    i = int(np.argmin(mean_v))
+    ax.scatter([lams[i]], [mean_v[i]], s=220, facecolor=&quot;none&quot;, edgecolor=AQUA, lw=2.2, zorder=6)
+    ax.annotate(f&quot;best λ = {lams[i]:g}\nmean val RMS = {mean_v[i]:.2f}&quot;, (lams[i], mean_v[i]),
+                textcoords=&quot;offset points&quot;, xytext=best_xy, fontsize=9.5, color=AQUA, weight=&quot;semibold&quot;)
+    for lam, v in zip(lams, mean_v):
+        if lam != lams[i]:
+            ax.annotate(fmt_big(v), (lam, v), textcoords=&quot;offset points&quot;, xytext=(0, 9),
+                        ha=&quot;center&quot;, fontsize=8.5, color=VIOLET)
+    ax.set_xlabel(&quot;regularising constant λ (log scale)&quot;)
+    ax.set_ylabel(&quot;RMS error ($1000s)&quot;)
+    ax.set_title(title)
+    ax.xaxis.set_major_locator(FixedLocator(lams))
+    ax.xaxis.set_major_formatter(FixedFormatter([f&quot;{l:g}&quot; for l in lams]))
+    ax.xaxis.set_minor_locator(FixedLocator([]))
+    if note_fold is not None:
+        note_fold(ax)
+    ax.legend(loc=&quot;upper left&quot;, fontsize=9)
+    return fig, ax
+
+
+def d_extra(ax):
+    ax.set_yscale(&quot;log&quot;)
+    ax.set_ylim(0.8, 3e7)
+    ax.set_ylabel(&quot;RMS error ($1000s, log scale)&quot;)
+    v6 = d[&quot;val_err&quot;][1:, 5]
+    ax.annotate(&quot;fold 6 (towns 51 to 60)&quot;, (0.01, v6[0]), textcoords=&quot;offset points&quot;, xytext=(30, 6),
+                fontsize=8.5, color=VIOLET, alpha=0.8)
+
+
+fig, ax = cv_plot(d, &quot;(d) Degree-8 polynomial on ZN: 10-fold cross-validation&quot;, &quot;&quot;, d_extra)
+save(fig, &quot;d_poly_reg_cv.png&quot;)
+
+# ========================================================= part (e) =======
+e = gaussian_regression()
+RESULTS[&quot;e&quot;] = {&quot;K&quot;: e[&quot;K&quot;], &quot;train_rms&quot;: e[&quot;train_rms&quot;], &quot;test_rms&quot;: e[&quot;test_rms&quot;],
+                &quot;s&quot;: e[&quot;s&quot;], &quot;seed&quot;: e[&quot;seed&quot;]}
+# repeat with 30 other random permutations to see how much the centres matter
+reps = [gaussian_regression(seed=s) for s in range(30)]
+rep_tr = np.array([r[&quot;train_rms&quot;] for r in reps])
+rep_te = np.array([r[&quot;test_rms&quot;] for r in reps])
+RESULTS[&quot;e_repeats&quot;] = {&quot;train_median&quot;: np.median(rep_tr, 0).tolist(),
+                        &quot;test_median&quot;: np.median(rep_te, 0).tolist(),
+                        &quot;test_q10&quot;: np.percentile(rep_te, 10, 0).tolist(),
+                        &quot;test_q90&quot;: np.percentile(rep_te, 90, 0).tolist()}
+# width sensitivity
+RESULTS[&quot;e_width&quot;] = {str(s): gaussian_regression(s=s)[&quot;test_rms&quot;] for s in (1.0, 2.0, 4.0)}
+# how strongly test towns activate their nearest centre (all 100 training points as centres)
+sq_te = ((Z_te[:, None, :] - Z_tr[None, :, :]) ** 2).sum(2)
+act_te = np.exp(-sq_te / (2 * 2.0 ** 2)).max(1)
+sq_tr = ((Z_tr[:, None, :] - Z_tr[None, :, :]) ** 2).sum(2)
+np.fill_diagonal(sq_tr, np.inf)
+act_tr = np.exp(-sq_tr / (2 * 2.0 ** 2)).max(1)
+RESULTS[&quot;e_activation&quot;] = {&quot;test_median&quot;: float(np.median(act_te)),
+                           &quot;test_frac_below_0.01&quot;: float(np.mean(act_te &lt; 0.01)),
+                           &quot;train_loo_median&quot;: float(np.median(act_tr))}
+mean_baseline = float(np.sqrt(np.mean((T_ALL[N_TRAIN:] - T_ALL[:N_TRAIN].mean()) ** 2)))
+RESULTS[&quot;mean_baseline_test_rms&quot;] = mean_baseline
+
+fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), gridspec_kw={&quot;wspace&quot;: 0.25, &quot;width_ratios&quot;: [1.35, 1]})
+ax = axes[0]
+K = e[&quot;K&quot;]
+ax.fill_between(K, RESULTS[&quot;e_repeats&quot;][&quot;test_q10&quot;], RESULTS[&quot;e_repeats&quot;][&quot;test_q90&quot;], color=ORANGE,
+                alpha=0.13, lw=0, label=&quot;test RMS, 10th to 90th pct. over 30 centre draws&quot;)
+ax.plot(K, e[&quot;train_rms&quot;], &quot;-o&quot;, color=BLUE, lw=2, ms=6, label=&quot;training RMS&quot;)
+ax.plot(K, e[&quot;test_rms&quot;], &quot;-o&quot;, color=ORANGE, lw=2, ms=6, label=&quot;test RMS&quot;)
+ax.axhline(mean_baseline, color=MUTED, ls=&quot;--&quot;, lw=1)
+ax.text(96, mean_baseline - 1.6, f&quot;predict the training mean: {mean_baseline:.2f}&quot;, ha=&quot;right&quot;,
+        fontsize=8.5, color=MUTED)
+for k_, v in zip(K, e[&quot;train_rms&quot;]):
+    ax.annotate(f&quot;{v:.2f}&quot;, (k_, v), textcoords=&quot;offset points&quot;, xytext=(0, -15), ha=&quot;center&quot;,
+                fontsize=8.3, color=BLUE)
+for k_, v in zip(K, e[&quot;test_rms&quot;]):
+    ax.annotate(f&quot;{v:.1f}&quot;, (k_, v), textcoords=&quot;offset points&quot;, xytext=(0, 8), ha=&quot;center&quot;,
+                fontsize=8.3, color=ORANGE)
+ax.set_xticks(K)
+ax.set_ylim(-1.6, 21)
+ax.set_xlabel(&quot;number of Gaussian basis functions K&quot;)
+ax.set_ylabel(&quot;RMS error ($1000s)&quot;)
+ax.set_title(f&quot;(e) Gaussian basis, s = {e[&#x27;s&#x27;]:g}, no regularisation&quot;)
+ax.legend(loc=&quot;upper left&quot;, fontsize=9)
+
+ax = axes[1]
+bins = np.linspace(0, 1, 26)
+ax.hist(act_te, bins=bins, color=ORANGE, alpha=0.6, label=&quot;test town&quot;)
+ax.hist(act_tr, bins=bins, color=BLUE, alpha=0.75, label=&quot;training town (nearest other centre)&quot;)
+ax.set_xlabel(r&quot;largest basis activation  $\max_j\ \phi_j(\mathbf{x})$&quot;)
+ax.set_ylabel(&quot;number of towns&quot;)
+ax.set_title(&quot;Why the test error stays high&quot;)
+ax.legend(loc=&quot;upper center&quot;, fontsize=9)
+save(fig, &quot;e_gauss_errors.png&quot;)
+
+# ========================================================= part (f) =======
+f = gaussian_regression_reg()
+RESULTS[&quot;f&quot;] = {&quot;lambdas&quot;: f[&quot;lambdas&quot;], &quot;mean_val&quot;: f[&quot;mean_val&quot;].tolist(),
+                &quot;mean_trn&quot;: f[&quot;mean_trn&quot;].tolist(), &quot;val_err&quot;: f[&quot;val_err&quot;].tolist(),
+                &quot;best_lambda&quot;: f[&quot;best_lambda&quot;]}
+# refit on all 100 towns: centres = first 90 of a random permutation of the 100
+Ztr, Zte, _, _ = normalize(X_ALL[:N_TRAIN], X_ALL[N_TRAIN:])
+C = Ztr[np.random.default_rng(572).permutation(N_TRAIN)[:90]]
+P_tr, P_te = design_gaussian(Ztr, C, 2.0), design_gaussian(Zte, C, 2.0)
+RESULTS[&quot;f_test&quot;] = {}
+for lam in LAMBDAS:
+    w = fit_ridge(P_tr, T_ALL[:N_TRAIN], lam)
+    RESULTS[&quot;f_test&quot;][str(lam)] = {&quot;train_rms&quot;: rms(P_tr, w, T_ALL[:N_TRAIN]),
+                                   &quot;test_rms&quot;: rms(P_te, w, T_ALL[N_TRAIN:])}
+
+
+def f_extra(ax):
+    ax.set_ylim(0, 13.5)
+
+
+fig, ax = cv_plot(f, &quot;(f) Gaussian basis, K = 90, all features: 10-fold cross-validation&quot;, &quot;&quot;, f_extra, best_xy=(22, 34))
+save(fig, &quot;f_gauss_reg_cv.png&quot;)
+
+# ------------------------------------------------------------------ dump ----
+with open(os.path.join(HERE, &quot;results.json&quot;), &quot;w&quot;) as fh:
+    json.dump(RESULTS, fh, indent=1, default=float)
+print(&quot;wrote results.json&quot;)
+</code></pre></details>
+</section>
+
+<!-- ================================================================ WRAP-UP -->
+<section class="part" id="conclusions">
+  <span class="part-label">Wrap-up</span>
+  <h2>Conclusions</h2>
+  <ul class="clean">
+    <li><b>(a)</b> Polynomial training error falls monotonically with degree (2.04 → 0.88), while test error explodes from 36.4 to ~10<sup>16</sup>.
+      Overfitting is amplified by the non-random split: the test towns lie far outside the training range, and high powers magnify that distance.</li>
+    <li><b>(b)</b> In the linear model, RM has the largest weight (+4.196 per s.d., about $8,600 per room), which is sensible. DIS gets about zero (+0.0107) because
+      the 100 suburbs barely vary in it and it is collinear with NOX, AGE and INDUS. On all 506 towns its weight is clearly negative.</li>
+    <li><b>(c)</b> ZN alone explains little (RMS floor 5.41). Low-order fits are stable. High-order fits pass near the 12 group means and oscillate wildly in the gap between 30 and 75.</li>
+    <li><b>(d)</b> For the degree-8 ZN polynomial, 10-fold cross-validation picks <b>λ = 10</b> (mean validation RMS 9.98, against 1.8 × 10<sup>5</sup> unregularised). This is also the best λ on the test set.</li>
+    <li><b>(e)</b> Gaussian basis: training error falls to 0.09 at K = 95 while test error stays near the mean-prediction level (about 9.1 to 9.7), and becomes worse and much less stable as K approaches 100. Most test towns activate no basis function.</li>
+    <li><b>(f)</b> For K = 90, cross-validation picks <b>λ = 0.01</b> (mean validation RMS 3.37 against 9.29 unregularised). Regularisation is essential once the number of basis functions equals the number of training points.</li>
+  </ul>
+</section>
+</main>
+</div>
+
+<footer>SYDE 572 · Assignment 2 · Amin Ambike · Built with Python, NumPy, Matplotlib and MathJax</footer>
+
+<script>
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href')));
+  const onScroll = () => {
+    let cur = 0;
+    targets.forEach((t, i) => { if (t && t.getBoundingClientRect().top < 120) cur = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === cur));
+  };
+  document.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  const expandAll = () => document.querySelectorAll('details').forEach(d => d.open = true);
+  window.addEventListener('beforeprint', expandAll);
+  if (location.search.includes('print')) expandAll();
+  window.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
+</script>
+</body>
+</html>
