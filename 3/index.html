@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYDE 572 · Assignment 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    chtml: { scale: 0.98 },
+    startup: { typeset: true }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --card: #ffffff;
+    --ink: #1d2330;
+    --ink-2: #4a4f5c;
+    --muted: #7a7e89;
+    --line: #e6e3dc;
+    --accent: #2a78d6;
+    --accent-2: #4a3aa7;
+    --orange: #eb6834;
+    --aqua: #1baf7a;
+    --tint: #eef4fc;
+    --hero-1: #121a2e;
+    --hero-2: #1e3160;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 Inter, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: radial-gradient(1200px 500px at 80% -10%, #2d4f9a 0%, transparent 60%),
+                linear-gradient(135deg, var(--hero-1), var(--hero-2));
+    color: #fff; padding: 64px 24px 72px; position: relative; overflow: hidden;
+  }
+  .hero svg.deco { position: absolute; right: -40px; top: 0; height: 100%; opacity: .22; }
+  .hero-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+  .crumbs { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #a9b8dc; }
+  .crumbs a { color: #cfdaf5; }
+  .hero h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.08; margin: 14px 0 14px; letter-spacing: -.01em; max-width: 820px;
+  }
+  .hero p.lede { font-size: 18px; color: #d5ddf0; max-width: 720px; margin: 0; }
+  .meta { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 26px; font-size: 14px; color: #b9c6e6; }
+  .meta b { color: #fff; font-weight: 600; }
+
+  .stats {
+    max-width: 1180px; margin: -38px auto 0; padding: 0 24px; position: relative;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .stat {
+    background: var(--card); border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: 0 1px 2px rgba(20,30,60,.06), 0 8px 24px rgba(20,30,60,.08);
+  }
+  .stat .k { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .stat .v { font-size: 26px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .stat .s { font-size: 13px; color: var(--ink-2); }
+
+  /* ---------- layout ---------- */
+  .layout { max-width: 1180px; margin: 0 auto; padding: 36px 24px 80px; display: grid;
+            grid-template-columns: 220px minmax(0, 1fr); gap: 40px; }
+  nav.toc { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+  nav.toc .t { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+  nav.toc a { display: block; color: var(--ink-2); padding: 5px 0 5px 12px; border-left: 2px solid var(--line); }
+  nav.toc a.sub { padding-left: 24px; font-size: 13.5px; color: var(--muted); }
+  nav.toc a:hover, nav.toc a.active { color: var(--accent); border-left-color: var(--accent); text-decoration: none; }
+
+  section.part { margin-bottom: 64px; }
+  .part-label { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: .1em;
+                text-transform: uppercase; color: var(--accent); background: var(--tint);
+                padding: 4px 10px; border-radius: 99px; }
+  h2 { font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.15;
+       margin: 12px 0 8px; letter-spacing: -.01em; }
+  h3 { font-size: 21px; margin: 44px 0 10px; font-weight: 700; letter-spacing: -.005em; scroll-margin-top: 20px; }
+  h3 .num { color: var(--accent); margin-right: 8px; }
+  h4 { font-size: 16.5px; margin: 26px 0 6px; }
+  h5 { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 22px 0 8px; }
+  p { margin: 10px 0; }
+  .intro { font-size: 17.5px; color: var(--ink-2); max-width: 760px; }
+
+  .card { background: var(--card); border-radius: var(--radius); padding: 22px 26px; margin: 18px 0;
+          border: 1px solid var(--line); }
+  .callout { border-left: 4px solid var(--accent); background: var(--tint); padding: 14px 18px;
+             border-radius: 0 10px 10px 0; margin: 18px 0; }
+  .callout.green { border-color: var(--aqua); background: #eaf7f1; }
+  .callout.orange { border-color: var(--orange); background: #fdf0ea; }
+  .answer { display: flex; gap: 14px; flex-wrap: wrap; margin: 18px 0; }
+  .answer .box { flex: 1 1 240px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .answer .box .k { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .answer .box .v { font-size: 22px; font-weight: 700; }
+  .answer .box .e { font-size: 14px; color: var(--ink-2); }
+
+  .eq { overflow-x: auto; overflow-y: hidden; }
+  mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+
+  /* ---------- tables ---------- */
+  .tbl { overflow-x: auto; margin: 12px 0 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th { text-align: left; font-weight: 600; background: #f3f2ee; color: var(--ink-2); padding: 9px 12px;
+       border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f0eee9; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  table.num td { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  table.num td:first-child { font-family: Inter, sans-serif; font-size: 13.5px; font-weight: 500; }
+  tbody tr:hover td { background: #fafaf7; }
+
+  details.hand { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+  details.hand summary { cursor: pointer; padding: 14px 18px; list-style: none; font-size: 15px; }
+  details.hand summary::-webkit-details-marker { display: none; }
+  details.hand summary::before { content: "▸"; color: var(--accent); margin-right: 10px; display: inline-block; transition: transform .15s; }
+  details.hand[open] summary::before { transform: rotate(90deg); }
+  .hand-body { padding: 0 18px 16px; }
+  .pill { display: inline-block; font-weight: 700; background: #fdf0ea; color: #b8451a; border-radius: 6px; padding: 1px 8px; margin-right: 8px; font-family: "JetBrains Mono", monospace; font-size: 13.5px; }
+  .note { font-size: 14px; color: var(--ink-2); }
+
+  /* ---------- figures ---------- */
+  figure { margin: 22px 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 6px; }
+  figure a.zoom { display: block; cursor: zoom-in; }
+  figcaption { font-size: 14px; color: var(--ink-2); padding: 10px 4px 2px; }
+  figcaption b { color: var(--ink); }
+  .fig-narrow { max-width: 760px; }
+
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 -8px; }
+  .tabs button { font: 600 13.5px Inter, sans-serif; border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+                 padding: 7px 14px; border-radius: 99px; cursor: pointer; }
+  .tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tabfig { display: none; }
+  .tabfig.on { display: block; }
+
+  /* ---------- code ---------- */
+  details.code { margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; background: #fbfbfa; overflow: hidden; }
+  details.code summary { cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 14.5px; background: var(--card); }
+  details.code summary code { font-family: "JetBrains Mono", monospace; color: var(--accent-2); }
+  pre { margin: 0; padding: 16px 18px; overflow-x: auto; font: 12.8px/1.55 "JetBrains Mono", ui-monospace, monospace; }
+  pre code.hljs { background: transparent; padding: 0; }
+  code.inline { font-family: "JetBrains Mono", monospace; font-size: 13.5px; background: #efede8; padding: 1px 6px; border-radius: 5px; }
+
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  main { min-width: 0; }
+  @media (max-width: 1200px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+  ul.clean { padding-left: 20px; }
+  ul.clean li { margin: 6px 0; }
+
+  .print-only { display: none; }
+  footer { text-align: center; color: var(--muted); font-size: 13.5px; padding: 30px 20px 50px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { display: none; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .hero { padding: 44px 16px 64px; }
+    .layout { padding: 28px 16px 60px; }
+    .stats { padding: 0 16px; gap: 10px; }
+    .stat .v { font-size: 21px; }
+    .card { padding: 18px 16px; }
+  }
+  @media print {
+    body { background: #fff; font-size: 13px; }
+    .hero { padding: 36px 28px 56px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .stats { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .layout { grid-template-columns: 1fr; padding-top: 24px; }
+    nav.toc, .tabs, .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    table { font-size: 11px; } td, th { padding: 5px 7px; }
+    table.num td { font-size: 10.5px; }
+    .tabfig { display: block !important; }
+    figure, .tbl, .answer .box, .callout { break-inside: avoid; }
+    h3 { break-after: avoid; }
+    details.code pre { white-space: pre-wrap; font-size: 10px; }
+    th, .callout, .pill, .part-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+</style>
+<style>
+  tr.hl td { background: #eaf7f1 !important; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 900px) { .grid4 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .steps { counter-reset: s; list-style: none; padding-left: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 38px; margin: 14px 0; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%;
+                        background: var(--tint); color: var(--accent); font-weight: 700; font-size: 13.5px; display: flex; align-items: center; justify-content: center; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+  @media print { figure.p1fig { max-width: 440px; } .grid4 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="deco" viewBox="0 0 400 400" aria-hidden="true">
+    <ellipse cx="220" cy="210" rx="150" ry="62" transform="rotate(-28 220 210)" fill="none" stroke="#9fc1ff" stroke-width="1.6" opacity=".7"/>
+    <line x1="88" y1="282" x2="352" y2="138" stroke="#5fe0b0" stroke-width="3"/>
+    <line x1="196" y1="150" x2="244" y2="270" stroke="#9fc1ff" stroke-width="2"/>
+    <circle cx="120" cy="250" r="6" fill="#5fe0b0"/><circle cx="160" cy="236" r="6" fill="#5fe0b0"/>
+    <circle cx="230" cy="200" r="6" fill="#9fc1ff"/><circle cx="260" cy="185" r="6" fill="#9fc1ff"/>
+    <circle cx="300" cy="158" r="6" fill="#ff8a5c"/><circle cx="330" cy="150" r="6" fill="#ff8a5c"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="crumbs"><a href="../index.html">Portfolio</a> &nbsp;/&nbsp; SYDE 572 &nbsp;/&nbsp; Assignment 3</div>
+    <h1>PCA, data compression and ISOMAP</h1>
+    <p class="lede">Principal component analysis worked by hand, then applied to Fisher's Iris data: marginal views, principal axes,
+      how much variance a low-dimensional representation keeps, and a comparison with the non-linear ISOMAP embedding.
+      Every number on this page is produced by the Python code included below.</p>
+    <div class="meta">
+      <span>Course <b>SYDE 572</b></span>
+      <span>Author <b>Amin Ambike</b></span>
+      <span>Student ID <b>20998636</b></span>
+      <span>Code <b><a style="color:#fff" href="#code">Python 3 · NumPy · scikit-learn</a></b></span>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="k">Part 1 · first PC</div><div class="v">(1, 1) / √2</div><div class="s">errors: (3,3) → 0.707, (3,4) → 0</div></div>
+  <div class="stat"><div class="k">Part 3 · PC1 of Iris</div><div class="v">92.46%</div><div class="s">of the variance, mostly petal length</div></div>
+  <div class="stat"><div class="k">Part 4 · 2-D PCA keeps</div><div class="v">97.77%</div><div class="s">1 PC is enough for 50%</div></div>
+  <div class="stat"><div class="k">Part 5 · 5-NN accuracy</div><div class="v">96.7% vs 92.7%</div><div class="s">PCA vs ISOMAP (k = 3), 2-D</div></div>
+</div>
+
+<div class="layout">
+<nav class="toc">
+  <div class="t">Contents</div>
+  <a href="#p1">Part 1 · PCA by hand</a>
+  <a href="#p2">Part 2 · Marginal views</a>
+  <a class="sub" href="#p2-data">Data &amp; measures</a>
+  <a class="sub" href="#p2-1d">One feature</a>
+  <a class="sub" href="#p2-2d">Two features</a>
+  <a class="sub" href="#p2-3d">Three features</a>
+  <a class="sub" href="#p2-sum">Which views cluster?</a>
+  <a href="#p3">Part 3 · PCA</a>
+  <a class="sub" href="#p3-axes">Principal axes</a>
+  <a class="sub" href="#p3-vis">1, 2 and 3 PCs</a>
+  <a href="#p4">Part 4 · Compression</a>
+  <a href="#p5">Part 5 · ISOMAP</a>
+  <a class="sub" href="#p5-graph">The 3-NN graph</a>
+  <a class="sub" href="#p5-emb">Embeddings</a>
+  <a class="sub" href="#p5-cmp">PCA or ISOMAP?</a>
+  <a href="#code">Python code</a>
+  <a href="#conclusions">Conclusions</a>
+</nav>
+
+<main>
+<!-- ================================================================ PART 1 -->
+<section class="part" id="p1">
+  <span class="part-label">Part one</span>
+  <h2>PCA by hand</h2>
+  <p class="intro">Five points with two features. Find the first principal component and the L2 reconstruction error of (3, 3) and (3, 4).</p>
+
+  <div class="grid2">
+    <div>
+      <div class="tbl"><table class="num"><thead><tr><th>n</th><th>x₁</th><th>x₂</th><th>x₁ − μ₁</th><th>x₂ − μ₂</th></tr></thead><tbody>
+        <tr><td>1</td><td>−2</td><td>−1</td><td>−2</td><td>−2</td></tr>
+        <tr><td>2</td><td>−1</td><td>0</td><td>−1</td><td>−1</td></tr>
+        <tr><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>4</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>
+        <tr><td>5</td><td>2</td><td>3</td><td>2</td><td>2</td></tr>
+      </tbody></table></div>
+      <ol class="steps">
+        <li><b>Centre.</b> \(\boldsymbol\mu = \tfrac15\sum_n \mathbf x_n = (0/5,\ 5/5) = (0,\ 1)\). Subtracting it gives the last two columns.</li>
+        <li><b>Covariance.</b> \(\mathbf S = \tfrac1N \mathbf X_c^\top \mathbf X_c = \tfrac15\begin{pmatrix}10 & 10\\ 10 & 10\end{pmatrix} = \begin{pmatrix}2 & 2\\ 2 & 2\end{pmatrix}\).
+          (Using \(N-1\) instead scales \(\mathbf S\) but not its eigenvectors.)</li>
+        <li><b>Eigen-decomposition.</b> \(\det(\mathbf S - \lambda \mathbf I) = (2-\lambda)^2 - 4 = \lambda(\lambda - 4) = 0\), so \(\lambda_1 = 4,\ \lambda_2 = 0\).
+          For \(\lambda_1 = 4\): \(-2w_1 + 2w_2 = 0 \Rightarrow w_1 = w_2\).</li>
+      </ol>
+    </div>
+    <figure class="p1fig"><a class="zoom" href="media/p1_by_hand.png" target="_blank"><img src="media/p1_by_hand.png" alt=""></a><figcaption>The five points lie exactly on the line x₂ = x₁ + 1. The first PC (purple) passes through the mean along that line. (3, 3) is reconstructed at (2.5, 3.5); (3, 4) is on the line and is reconstructed exactly.</figcaption></figure>
+  </div>
+
+  <div class="answer">
+    <div class="box"><div class="k">1 · First principal component</div><div class="v">w₁ = (1/√2, 1/√2)</div><div class="e">= (0.7071, 0.7071), unit length, eigenvalue 4. The second PC (−1/√2, 1/√2) has eigenvalue 0.</div></div>
+  </div>
+  <p>This also follows from the "minimum orthogonal distance" definition. After centring, every point is a multiple of (1, 1), so the line through \(\boldsymbol\mu\) in direction
+    (1, 1)/√2 passes through all five points. The total orthogonal distance is <b>0</b>, which no other direction can match. All of the variance (λ₁ / (λ₁ + λ₂) = 100%) lies along w₁.</p>
+
+  <h4>Reconstructing a new point</h4>
+  <p>A point \(\mathbf p\) is encoded by its coordinate along the PC and decoded back into the original space. Both steps use the <i>training</i> mean:</p>
+  <p class="eq">\[ z = \mathbf w_1^\top(\mathbf p - \boldsymbol\mu), \qquad \hat{\mathbf p} = \boldsymbol\mu + z\,\mathbf w_1, \qquad
+     e = \lVert \mathbf p - \hat{\mathbf p}\rVert_2 = \big|\mathbf w_2^\top(\mathbf p - \boldsymbol\mu)\big| . \]</p>
+  <div class="grid2">
+    <div class="card">
+      <h4 style="margin-top:0;color:var(--orange)">2 · Point (3, 3)</h4>
+      <p class="eq">\[ \begin{aligned} \mathbf p - \boldsymbol\mu &= (3,\ 3) - (0,\ 1) = (3,\ 2) \\
+         z &= \tfrac{1}{\sqrt2}(3 + 2) = \tfrac{5}{\sqrt2} = 3.5355 \\
+         \hat{\mathbf p} &= (0,\ 1) + \tfrac{5}{\sqrt2}\cdot\tfrac{1}{\sqrt2}(1,\ 1) = (2.5,\ 3.5) \\
+         \mathbf p - \hat{\mathbf p} &= (0.5,\ -0.5) \\
+         e &= \sqrt{0.5^2 + 0.5^2} = \sqrt{0.5} = \tfrac{1}{\sqrt2} \approx \mathbf{0.7071} \end{aligned} \]</p>
+      <p class="note">Check with PC2: \(|\tfrac{1}{\sqrt2}(-3 + 2)| = 1/\sqrt2\). ✓</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;color:#e34948">3 · Point (3, 4)</h4>
+      <p class="eq">\[ \begin{aligned} \mathbf p - \boldsymbol\mu &= (3,\ 4) - (0,\ 1) = (3,\ 3) \\
+         z &= \tfrac{1}{\sqrt2}(3 + 3) = \tfrac{6}{\sqrt2} = 4.2426 \\
+         \hat{\mathbf p} &= (0,\ 1) + \tfrac{6}{\sqrt2}\cdot\tfrac{1}{\sqrt2}(1,\ 1) = (3,\ 4) \\
+         \mathbf p - \hat{\mathbf p} &= (0,\ 0) \\
+         e &= \mathbf{0} \end{aligned} \]</p>
+      <p class="note">Check with PC2: \(|\tfrac{1}{\sqrt2}(-3 + 3)| = 0\). ✓ (3, 4) satisfies x₂ = x₁ + 1, so it lies on the PC line.</p>
+    </div>
+  </div>
+  <div class="callout orange"><b>Why centring matters here.</b> Without subtracting the mean, the projection line would pass through the origin instead of through (0, 1).
+    The answers would then swap: (3, 3) would get error 0 and (3, 4) would get \(1/\sqrt2\). The point that is actually consistent with the data, (3, 4), is the one
+    PCA should reconstruct perfectly, and that only happens when the data are centred.</div>
+  <details class="code"><summary><code>pca_by_hand</code>: numerical check of Part 1</summary><pre><code class="language-python">def pca_by_hand(X=None, queries=((3, 3), (3, 4))):
+    &quot;&quot;&quot;
+    First principal component of a small 2-D dataset and the L2
+    reconstruction error of new points, following the hand calculation:
+      1. centre the data with the sample mean
+      2. covariance matrix S = (1/N) Xc^T Xc
+      3. first PC = unit eigenvector of S with the largest eigenvalue
+      4. a point p is reconstructed as  mu + ((p - mu) . w) w
+    &quot;&quot;&quot;
+    if X is None:
+        X = np.array([[-2, -1], [-1, 0], [0, 1], [1, 2], [2, 3]], dtype=float)
+    mu = X.mean(axis=0)
+    Xc = X - mu
+    S = Xc.T @ Xc / len(X)
+    evals, evecs = np.linalg.eigh(S)            # ascending order
+    w = evecs[:, -1]
+    w = w * np.sign(w[np.argmax(np.abs(w))])    # fix the sign so the largest entry is positive
+    out = {&quot;mean&quot;: mu, &quot;S&quot;: S, &quot;eigenvalues&quot;: evals[::-1], &quot;w1&quot;: w, &quot;queries&quot;: []}
+    for q in queries:
+        p = np.asarray(q, dtype=float)
+        z = (p - mu) @ w                        # 1-D code (coordinate along the PC)
+        p_hat = mu + z * w                      # reconstruction
+        out[&quot;queries&quot;].append({&quot;point&quot;: p, &quot;centred&quot;: p - mu, &quot;z&quot;: z, &quot;recon&quot;: p_hat,
+                               &quot;residual&quot;: p - p_hat, &quot;error&quot;: float(np.linalg.norm(p - p_hat))})
+    return out</code></pre></details>
+</section>
+
+<!-- ================================================================ PART 2 -->
+<section class="part" id="p2">
+  <span class="part-label">Part two</span>
+  <h2>Marginal views of the Iris data</h2>
+  <p class="intro">Project the 4-D data onto one, two or three of the original feature axes (dropping the rest) and look for species clusters.</p>
+
+  <h3 id="p2-data"><span class="num">2.1</span>Data and how clusters are measured</h3>
+  <p>The UCI Iris archive contains 150 flowers, 50 each of <span class="sw" style="background:#1baf7a"></span><b>setosa</b>,
+    <span class="sw" style="background:#2a78d6"></span><b>versicolor</b> and <span class="sw" style="background:#eb6834"></span><b>virginica</b>, each with four measurements in cm.
+    The archive ships two copies: <code class="inline">iris.data</code> has two known transcription errors (samples 35 and 38), and
+    <code class="inline">bezdekIris.data</code> is the corrected version that matches Fisher's paper. I use the corrected file; it is identical to the copy bundled with scikit-learn.</p>
+  <p>To judge "nice clusters" with numbers as well as by eye, every view is scored two ways:</p>
+  <ul class="clean">
+    <li><b>Fisher ratio</b> \(J = \operatorname{tr}(\mathbf S_B) / \operatorname{tr}(\mathbf S_W)\): the spread between species means divided by the spread inside each species.
+      Large \(J\) means tight, well separated groups.</li>
+    <li><b>Leave-one-out 5-NN accuracy</b>: each flower is classified by its 5 nearest neighbours among the other 149 in that view. This shows whether the species can still be told apart.</li>
+  </ul>
+
+  <h3 id="p2-1d"><span class="num">2.2</span>One feature</h3>
+  <figure class=""><a class="zoom" href="media/p2_1d.png" target="_blank"><img src="media/p2_1d.png" alt=""></a><figcaption>Each feature on its own, as a class-coloured histogram.</figcaption></figure>
+  <p>The petal measurements alone already split the data. Setosa petal length is 1.0 to 1.9 cm while the other two species
+    start at 3.0 cm, and setosa petal width is at most 0.6 cm against at least 1.0 cm for versicolor.
+    Versicolor and virginica overlap for petal length 4.5 to 5.1 cm and petal width 1.4 to 1.8 cm.
+    The sepal features overlap heavily for all three species: sepal width has \(J = 0.67\) and only 56.7% 5-NN accuracy.</p>
+
+  <h3 id="p2-2d"><span class="num">2.3</span>Two features</h3>
+  <figure class=""><a class="zoom" href="media/p2_2d.png" target="_blank"><img src="media/p2_2d.png" alt=""></a><figcaption>All six pairs of features.</figcaption></figure>
+  <p>Every pair that contains a petal feature isolates setosa as its own cluster. <b>Petal length + petal width</b> (bottom right) gives the cleanest picture:
+    three groups along one diagonal, setosa far away and versicolor and virginica touching only at their boundary (\(J = 15.5\), 96.0%). Sepal length + sepal width
+    (top left) is the only pair with no clean structure. Setosa forms a separate group in the upper left, but versicolor and virginica are fully mixed (74.7%).</p>
+
+  <h3 id="p2-3d"><span class="num">2.4</span>Three features</h3>
+  <figure class=""><a class="zoom" href="media/p2_3d.png" target="_blank"><img src="media/p2_3d.png" alt=""></a><figcaption>All four combinations of three features.</figcaption></figure>
+  <p>Three axes do not reveal anything that two petal axes did not. The best 3-D views (any triple containing both petal features) reach 96.0%, the same as the petal pair alone.
+    Adding a sepal feature <i>lowers</i> \(J\) (15.5 → 10.5 or 8.0), because the sepal axes add spread within each species without separating the species further.</p>
+
+  <h3 id="p2-sum"><span class="num">2.5</span>Which marginal views give nice clusters?</h3>
+  <figure class=""><a class="zoom" href="media/p2_separability.png" target="_blank"><img src="media/p2_separability.png" alt=""></a><figcaption>All 15 views ranked by Fisher ratio (left) and their leave-one-out 5-NN accuracy (right).</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>features</th><th>view</th><th>Fisher ratio J</th><th>5-NN accuracy</th></tr></thead><tbody><tr><td>1</td><td>petal length</td><td>16.06</td><td>94.7%</td></tr><tr class="hl"><td>2</td><td>petal length + petal width</td><td>15.50</td><td>96.0%</td></tr><tr><td>1</td><td>petal width</td><td>13.06</td><td>96.0%</td></tr><tr><td>3</td><td>sepal width + petal length + petal width</td><td>10.51</td><td>96.0%</td></tr><tr><td>2</td><td>sepal width + petal length</td><td>10.15</td><td>94.7%</td></tr><tr><td>3</td><td>sepal length + petal length + petal width</td><td>8.03</td><td>96.0%</td></tr><tr><td>2</td><td>sepal length + petal length</td><td>7.56</td><td>93.3%</td></tr><tr><td>4</td><td>sepal length + sepal width + petal length + petal width</td><td>6.63</td><td>96.7%</td></tr><tr><td>3</td><td>sepal length + sepal width + petal length</td><td>6.15</td><td>95.3%</td></tr><tr><td>2</td><td>sepal width + petal width</td><td>3.97</td><td>94.7%</td></tr><tr><td>2</td><td>sepal length + petal width</td><td>3.18</td><td>96.0%</td></tr><tr><td>3</td><td>sepal length + sepal width + petal width</td><td>2.50</td><td>94.7%</td></tr><tr><td>1</td><td>sepal length</td><td>1.62</td><td>63.3%</td></tr><tr><td>2</td><td>sepal length + sepal width</td><td>1.33</td><td>74.7%</td></tr><tr><td>1</td><td>sepal width</td><td>0.67</td><td>56.7%</td></tr></tbody></table></div>
+  <div class="callout green">
+    <b>Comments.</b>
+    <ul class="clean">
+      <li><b>Yes: petal length, petal width and the pair of them.</b> These views produce three compact clusters. Setosa is perfectly separated, and versicolor and virginica overlap only slightly.
+        Petal length alone has the highest Fisher ratio of all 15 views (16.1), and the petal pair is close behind (15.5).</li>
+      <li><b>Setosa is easy, the other two are not.</b> Setosa can be separated with a straight line in <i>every</i> view that includes a petal feature. Versicolor and virginica
+        are never fully separated in any marginal view. In every petal-based view all of the misclassified flowers (5 to 8) are versicolor or virginica flowers at that boundary; no setosa is ever misclassified.</li>
+      <li><b>More features is not automatically better.</b> Using all four features gives 96.7%, only one flower better than petal width alone (96.0%), and a lower Fisher ratio (6.6).
+        Almost all of the species information is in the two petal measurements. The data are effectively low-dimensional, which suggests PCA will work well.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>marginal_separability</code>, <code>fisher_ratio</code>, <code>loo_knn_accuracy</code></summary><pre><code class="language-python">def loo_knn_accuracy(Z, y, k=5):
+    &quot;&quot;&quot;Leave-one-out accuracy of a k-NN classifier: a simple measure of how
+    well separated the classes are in the representation Z.&quot;&quot;&quot;
+    clf = KNeighborsClassifier(n_neighbors=k)
+    return float(cross_val_score(clf, Z, y, cv=LeaveOneOut()).mean())
+
+
+def fisher_ratio(Z, y):
+    &quot;&quot;&quot;Between-class scatter / within-class scatter (trace ratio).
+    Large values mean tight, well separated clusters.&quot;&quot;&quot;
+    mu = Z.mean(axis=0)
+    sb = sum((y == c).sum() * np.sum((Z[y == c].mean(axis=0) - mu) ** 2) for c in np.unique(y))
+    sw = sum(np.sum((Z[y == c] - Z[y == c].mean(axis=0)) ** 2) for c in np.unique(y))
+    return float(sb / sw)
+
+
+def marginal_separability(X, y, k=5):
+    &quot;&quot;&quot;Score every subset of 1 to 4 features (the marginal views).&quot;&quot;&quot;
+    rows = []
+    for r in (1, 2, 3, 4):
+        for idx in itertools.combinations(range(X.shape[1]), r):
+            Z = X[:, idx]
+            rows.append({&quot;features&quot;: [FEATURES[i] for i in idx], &quot;idx&quot;: list(idx),
+                         &quot;loo_knn&quot;: loo_knn_accuracy(Z, y, k), &quot;fisher&quot;: fisher_ratio(Z, y)})
+    return rows</code></pre></details>
+</section>
+
+<!-- ================================================================ PART 3 -->
+<section class="part" id="p3">
+  <span class="part-label">Part three</span>
+  <h2>Principal component analysis</h2>
+  <p class="intro">PCA on the centred 150 × 4 data matrix. All four features are in the same unit (cm), so they are not rescaled; see the note at the end of 3.1.</p>
+
+  <h3 id="p3-axes"><span class="num">3.1</span>The principal axes</h3>
+  <p>With the centred data \(\mathbf X_c = \mathbf X - \mathbf 1\boldsymbol\mu^\top\) and its SVD \(\mathbf X_c = \mathbf U\boldsymbol\Sigma\mathbf V^\top\), the columns of
+    \(\mathbf V\) are the principal axes, \(\mathbf X_c\mathbf V\) are the scores, and the variance along axis \(i\) is \(\sigma_i^2/(N-1)\).
+    I compute this directly with NumPy and check it against <code class="inline">sklearn.decomposition.PCA</code>; the two agree to 1e-13.
+    The mean is \(\boldsymbol\mu = (5.843,\ 3.057,\ 3.758,\ 1.199)\) cm.</p>
+  <div class="tbl"><table class="num"><thead><tr><th>axis</th><th>sepal length</th><th>sepal width</th><th>petal length</th><th>petal width</th><th>variance (cm²)</th><th>% of total</th></tr></thead>
+  <tbody><tr><td>PC1</td><td>+0.361</td><td>−0.085</td><td>+0.857</td><td>+0.358</td><td>4.2282</td><td>92.46%</td></tr><tr><td>PC2</td><td>+0.657</td><td>+0.730</td><td>−0.173</td><td>−0.075</td><td>0.2427</td><td>5.31%</td></tr><tr><td>PC3</td><td>−0.582</td><td>+0.598</td><td>+0.076</td><td>+0.546</td><td>0.0782</td><td>1.71%</td></tr><tr><td>PC4</td><td>+0.315</td><td>−0.320</td><td>−0.480</td><td>+0.754</td><td>0.0238</td><td>0.52%</td></tr></tbody></table></div>
+  <figure class="fig-narrow"><a class="zoom" href="media/p3_loadings.png" target="_blank"><img src="media/p3_loadings.png" alt=""></a><figcaption>The same four vectors as a heat map. Each row is a unit vector in feature space; rows are mutually orthogonal.</figcaption></figure>
+  <ul class="clean">
+    <li><b>PC1 ≈ overall flower size, dominated by petal length</b> (loading +0.857, plus about +0.36 each for sepal length and petal width). Petal length also has by far the largest
+      variance of the four features (3.12 cm² of the 4.57 total), so PC1 mostly follows it. Setosa has small petals and sits at the negative end.</li>
+    <li><b>PC2 ≈ sepal size</b>, especially sepal width (+0.730) and sepal length (+0.657), and nearly independent of the petals.</li>
+    <li>PC3 and PC4 are contrasts between features and carry only 1.7% and 0.5% of the variance.</li>
+  </ul>
+  <p class="note"><b>Standardising?</b> If each feature is first scaled to unit variance, PC1 explains only 73.0% and the 2-D 5-NN accuracy falls from 96.7% to
+    91.3%. Scaling inflates sepal width, the noisiest and least informative feature, to the same weight as the petals.
+    Since all features share one unit, the unscaled covariance is the better choice here.</p>
+  <details class="code"><summary><code>pca_svd</code> and the scikit-learn check</summary><pre><code class="language-python">def pca_svd(X):
+    &quot;&quot;&quot;
+    PCA from the SVD of the centred data matrix  Xc = U Sigma V^T.
+    Rows of V^T are the principal axes; Xc V are the scores;
+    the variance along PC i is sigma_i^2 / (N - 1).
+    &quot;&quot;&quot;
+    mu = X.mean(axis=0)
+    Xc = X - mu
+    U, s, Vt = np.linalg.svd(Xc, full_matrices=False)
+    # same sign convention as scikit-learn (largest |loading| of each axis positive)
+    signs = np.sign(Vt[np.arange(len(s)), np.argmax(np.abs(Vt), axis=1)])
+    Vt = Vt * signs[:, None]
+    scores = Xc @ Vt.T
+    return {&quot;mean&quot;: mu, &quot;singular_values&quot;: s, &quot;components&quot;: Vt, &quot;scores&quot;: scores,
+            &quot;variance&quot;: s ** 2 / (len(X) - 1)}
+
+
+def pca_sklearn(X, n_components=None):
+    &quot;&quot;&quot;The same decomposition with scikit-learn, used as a check.&quot;&quot;&quot;
+    p = PCA(n_components=n_components).fit(X)
+    return p, p.transform(X)</code></pre></details>
+
+  <h3 id="p3-vis"><span class="num">3.2</span>The data marginalised on 1, 2 and 3 principal axes</h3>
+  <figure class=""><a class="zoom" href="media/p3_pc1.png" target="_blank"><img src="media/p3_pc1.png" alt=""></a><figcaption>Projection onto the major axis only: histogram (top) and individual flowers (bottom, jittered vertically by species).</figcaption></figure>
+  <p><b>Major axis only.</b> One number per flower already separates setosa (PC1 from -3.22 to -2.20) from the others
+    (versicolor starts at -0.91). Versicolor and virginica overlap between 0.52 and 1.56.
+    5-NN accuracy is 91.3%. PC1 has a high Fisher ratio (13.2) because it is the direction of largest spread, and that spread is mainly the gap between species.</p>
+  <figure class=""><a class="zoom" href="media/p3_pc2.png" target="_blank"><img src="media/p3_pc2.png" alt=""></a><figcaption>Projection onto the top two axes, with each feature's loading drawn as an arrow (biplot).</figcaption></figure>
+  <p><b>Top two axes.</b> Adding PC2 lifts accuracy to 96.7%, the same as using all four original features, with half the numbers. The biplot shows the
+    petal arrows lying almost along PC1 and the sepal arrows pointing up along PC2. Versicolor and virginica are split mainly by PC1, which means by petal size.</p>
+  <figure class=""><a class="zoom" href="media/p3_pc3.png" target="_blank"><img src="media/p3_pc3.png" alt=""></a><figcaption>Projection onto the top three axes, from two viewpoints.</figcaption></figure>
+  <p><b>Top three axes.</b> PC3 adds little spread (−0.69 to 0.76 cm, against −3.22 to 3.80 cm on PC1) and no extra separation. Accuracy stays at 96.7%.
+    The 3-D cloud is essentially a flat sheet, which agrees with the variance numbers in Part 4.</p>
+</section>
+
+<!-- ================================================================ PART 4 -->
+<section class="part" id="p4">
+  <span class="part-label">Part four</span>
+  <h2>Data compression</h2>
+  <p class="intro">How much of the dataset survives when it is described by k principal components instead of 4 features?</p>
+  <p>For the centred matrix, the squared Frobenius norm is the total sum of squares, which equals the sum of the squared singular values and \(N-1\) times the total variance:</p>
+  <p class="eq">\[ \lVert\mathbf X_c\rVert_F^2 = \sum_{n,d} x_{nd}^2 = \operatorname{tr}(\mathbf X_c^\top\mathbf X_c) = \sum_{i=1}^{4}\sigma_i^2 = (N-1)\sum_i \lambda_i . \]</p>
+  <p>Projecting onto the first \(k\) axes and reconstructing gives \(\hat{\mathbf X}_c = \mathbf X_c\mathbf V_k\mathbf V_k^\top\). By orthogonality the error is exactly the discarded part:</p>
+  <p class="eq">\[ \lVert\mathbf X_c - \mathbf X_c\mathbf V_k\mathbf V_k^\top\rVert_F^2 = \sum_{i>k}\sigma_i^2 , \qquad
+     \text{variance explained}(k) = \frac{\sum_{i\le k}\sigma_i^2}{\lVert\mathbf X_c\rVert_F^2} . \]</p>
+  <p>For Iris: \(\lVert\mathbf X_c\rVert_F^2 = 681.37\ \text{cm}^2\), and the squared singular values are
+    \(\sigma_i^2 = 630.01,\ 36.16,\ 11.65,\ 3.55\) (they add to 681.37).</p>
+  <figure class=""><a class="zoom" href="media/p4_variance.png" target="_blank"><img src="media/p4_variance.png" alt=""></a><figcaption>Left: share of variance per PC and cumulative. Right: squared reconstruction error against the number of PCs kept; each drop equals the σᵢ² of the PC that was added.</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>PCs kept k</th><th>Σ σᵢ² kept (cm²)</th><th>‖X_c − X̂_c‖²_F (cm²)</th><th>variance explained</th></tr></thead><tbody><tr><td>0</td><td>0.00</td><td>681.37</td><td>0.00%</td></tr><tr><td>1</td><td>630.01</td><td>51.36</td><td>92.46%</td></tr><tr class="hl"><td>2</td><td>666.17</td><td>15.20</td><td>97.77%</td></tr><tr><td>3</td><td>677.82</td><td>3.55</td><td>99.48%</td></tr><tr><td>4</td><td>681.37</td><td>0.00</td><td>100.00%</td></tr></tbody></table></div>
+  <div class="answer">
+    <div class="box"><div class="k">1 · Variance explained by the 2-D representation</div><div class="v">97.77%</div>
+      <div class="e">(630.01 + 36.16) / 681.37. Only 15.20 cm² (2.23%) is lost, an RMS error of 0.32 cm per flower.</div></div>
+    <div class="box"><div class="k">2 · PCs needed for 50% of the variance</div><div class="v">1 PC</div>
+      <div class="e">PC1 alone explains 92.46% ≥ 50%. (Two PCs are needed for 95%.)</div></div>
+  </div>
+  <div class="callout">
+    <b>Comments.</b> The 4-D Iris data compress almost perfectly to 2-D: halving the storage keeps 97.8% of the variance and, as Part 3 showed, all of the species information
+    (5-NN accuracy 96.7% in both cases). The 50% threshold is already passed by PC1, and the answer stays 1 PC even with standardised features
+    (73.0%), so it does not depend on the scaling choice.
+  </div>
+  <details class="code"><summary><code>variance_explained</code>: Frobenius norm and reconstruction error</summary><pre><code class="language-python">def variance_explained(X):
+    &quot;&quot;&quot;
+    For a centred matrix Xc,  ||Xc||_F^2 = trace(Xc^T Xc) = sum_i sigma_i^2,
+    which is (N - 1) times the total variance.  Keeping k PCs leaves the
+    reconstruction error  ||Xc - Xc V_k V_k^T||_F^2 = sum_{i&gt;k} sigma_i^2,
+    so the fraction of variance explained by k PCs is
+        sum_{i&lt;=k} sigma_i^2 / ||Xc||_F^2.
+    &quot;&quot;&quot;
+    Xc = X - X.mean(axis=0)
+    fro2 = float(np.sum(Xc ** 2))
+    s = np.linalg.svd(Xc, compute_uv=False)
+    Vt = np.linalg.svd(Xc, full_matrices=False)[2]
+    ratio = s ** 2 / fro2
+    recon = []
+    for k in range(len(s) + 1):
+        Vk = Vt[:k].T
+        R = Xc - Xc @ Vk @ Vk.T
+        recon.append(float(np.sum(R ** 2)))
+    cum = np.cumsum(ratio)
+    return {&quot;fro2&quot;: fro2, &quot;singular_values&quot;: s, &quot;sigma2&quot;: s ** 2, &quot;ratio&quot;: ratio,
+            &quot;cumulative&quot;: cum, &quot;recon_error_fro2&quot;: recon,
+            &quot;pcs_for_50&quot;: int(np.searchsorted(cum, 0.5) + 1),
+            &quot;pcs_for_95&quot;: int(np.searchsorted(cum, 0.95) + 1)}</code></pre></details>
+</section>
+
+<!-- ================================================================ PART 5 -->
+<section class="part" id="p5">
+  <span class="part-label">Part five</span>
+  <h2>Non-linear components: ISOMAP</h2>
+  <p class="intro">ISOMAP replaces straight-line distances with distances measured along a k-nearest-neighbour graph, then embeds those geodesic distances in 2-D with MDS.</p>
+  <ol class="steps">
+    <li>Connect every flower to its <b>k = 3</b> nearest neighbours (edge length = Euclidean distance).</li>
+    <li>Geodesic distance between two flowers = length of the shortest path through this graph (Dijkstra).</li>
+    <li>Find 2-D points whose pairwise distances match the geodesic distances as closely as possible (MDS).</li>
+  </ol>
+  <p><code class="inline">sklearn.manifold.Isomap</code> performs step 3 with <i>classical</i> MDS, a closed-form eigendecomposition. The handout describes fitting MDS by
+    gradient descent, so I also passed the same geodesic distance matrix to <code class="inline">sklearn.manifold.MDS</code>, which minimises the stress iteratively (SMACOF).
+    Both are shown.</p>
+
+  <h3 id="p5-graph"><span class="num">5.1</span>A 3-NN graph on Iris falls apart</h3>
+  <p>With only 3 neighbours the graph has <b>2 connected components</b>: the 50 setosa flowers, and the 100 versicolor and virginica flowers.
+    Geodesic distances between the two groups are infinite, so scikit-learn joins them by adding the single shortest edge between the groups. That edge runs from flower 24
+    (5.1, 3.3, 1.7, 0.5) to flower 99 (5.1, 2.5, 3, 1.1), with length 1.64 cm.
+    Every setosa to non-setosa path now goes through this one bridge, so geodesic distances across species are much longer than straight-line ones: setosa to virginica averages
+    7.67 cm along the graph against 4.82 cm directly.</p>
+
+  <h3 id="p5-emb"><span class="num">5.2</span>Embeddings</h3>
+  <figure class=""><a class="zoom" href="media/p5_isomap.png" target="_blank"><img src="media/p5_isomap.png" alt=""></a><figcaption>Top left: the 3-NN graph drawn on the PCA coordinates, with the bridge edge in red. Top right: 2-D PCA. Bottom: ISOMAP with k = 3, using classical MDS (left) and iterative SMACOF MDS (right) on the same geodesic distances.</figcaption></figure>
+  <p>The ISOMAP picture looks very different from PCA. Setosa collapses into a thin strand far to one side. Versicolor and virginica are unrolled along a bent path that
+    follows the chain of nearest neighbours, and the two species form arms that meet in the middle. The SMACOF version fits the same distances but arranges the groups differently: MDS solutions are only defined up to rotation and
+    reflection, and the iterative fit settles in a different local minimum of the stress.</p>
+
+  <h3 id="p5-cmp"><span class="num">5.3</span>PCA or ISOMAP?</h3>
+  <figure class=""><a class="zoom" href="media/p5_compare.png" target="_blank"><img src="media/p5_compare.png" alt=""></a><figcaption>All 2-D embeddings scored on classification, neighbourhood preservation and distance preservation. ISOMAP with k = 5, 10 and 20 is included to show how much the result depends on k.</figcaption></figure>
+  <div class="tbl"><table class="num"><thead><tr><th>2-D embedding</th><th>5-NN accuracy</th><th>Fisher ratio</th><th>trustworthiness</th><th>resid. var. (Eucl.)</th><th>resid. var. (geod.)</th></tr></thead>
+  <tbody><tr class="hl"><td>PCA (2 PCs)</td><td>96.7%</td><td>7.83</td><td>0.979</td><td>0.003</td><td>0.042</td></tr><tr><td>Isomap k=3</td><td>92.7%</td><td>8.17</td><td>0.936</td><td>0.046</td><td>0.016</td></tr><tr><td>Isomap k=3 + SMACOF</td><td>95.3%</td><td>7.18</td><td>0.976</td><td>0.042</td><td>0.011</td></tr><tr><td>Isomap k=5</td><td>94.7%</td><td>8.61</td><td>0.945</td><td>0.031</td><td>0.026</td></tr><tr><td>Isomap k=10</td><td>93.3%</td><td>11.07</td><td>0.949</td><td>0.019</td><td>0.029</td></tr><tr><td>Isomap k=20</td><td>96.7%</td><td>11.33</td><td>0.944</td><td>0.017</td><td>0.031</td></tr></tbody></table></div>
+  <p class="note">Trustworthiness (1 = perfect) checks whether a flower's nearest neighbours in 2-D are also near it in 4-D. Residual variance is \(1 - R^2\) between the original
+    distances and the 2-D distances, the measure used in the original ISOMAP paper; 0 is perfect.</p>
+  <div class="callout green">
+    <b>For Iris, PCA is preferable.</b>
+    <ul class="clean">
+      <li><b>Classification.</b> 2-D PCA keeps a 5-NN accuracy of 96.7%, the same as all four raw features. ISOMAP with 3 neighbours drops to
+        92.7% (95.3% with SMACOF). Its slightly higher Fisher ratio (8.17 vs 7.83)
+        comes from pushing setosa further away, which does not help with the hard versicolor and virginica boundary.</li>
+      <li><b>Compression.</b> PCA is a linear map with an exact inverse: two numbers per flower reconstruct all four measurements with 97.8% of the variance kept (0.32 cm RMS error),
+        and a new flower is encoded with one matrix product. ISOMAP has no decoder, so the original measurements cannot be recovered. It also cannot place a new flower without
+        rebuilding the graph or using an approximation, and it needs all \(N^2\) geodesic distances. PCA preserves the original distances almost perfectly (residual variance
+        0.003 vs 0.046) and also preserves neighbourhoods better (trustworthiness 0.979 vs 0.936).</li>
+      <li><b>Robustness.</b> With k = 3 the result depends on one bridge edge and on the exact neighbour chains. Changing k moves the accuracy between 92.7% and 96.7% with no steady trend,
+        while PCA has no tuning parameter.</li>
+      <li><b>Why.</b> ISOMAP pays off when the data lie on a <i>curved</i>, densely sampled manifold, such as a "Swiss roll", where straight-line distances cut across the fold.
+        Iris is the opposite case: 92.5% of the variance lies on one straight axis, the species form compact blobs rather than a curved sheet, and 150 points in 4-D are too few for
+        3-neighbour geodesics to estimate a manifold reliably. The motivation in the handout (Euclidean distances between very different plants are not meaningful) is reasonable
+        in general, but for these three closely related species the Euclidean structure is already informative.</li>
+    </ul>
+  </div>
+  <details class="code"><summary><code>isomap_embedding</code>, <code>isomap_smacof</code>, <code>knn_graph_components</code></summary><pre><code class="language-python">def knn_graph_components(X, k=3):
+    &quot;&quot;&quot;Number of connected pieces of the (symmetrised) k-NN graph.&quot;&quot;&quot;
+    G = kneighbors_graph(X, k, mode=&quot;distance&quot;)
+    n, labels = connected_components(G, directed=False)
+    return n, labels
+
+
+def isomap_embedding(X, k=3, n_components=2):
+    &quot;&quot;&quot;
+    ISOMAP: k-NN graph -&gt; geodesic (shortest-path) distances -&gt; MDS.
+    scikit-learn&#x27;s Isomap performs the final MDS step in closed form
+    (classical MDS = eigendecomposition of the double-centred squared
+    geodesic distances).  If the k-NN graph is disconnected it joins the
+    pieces with their shortest Euclidean edge before computing paths.
+    &quot;&quot;&quot;
+    iso = Isomap(n_neighbors=k, n_components=n_components)
+    Z = iso.fit_transform(X)
+    return iso, Z
+
+
+def isomap_smacof(iso, n_components=2, seed=0):
+    &quot;&quot;&quot;
+    The variant described in the handout: take the geodesic distance matrix
+    computed by Isomap and fit metric MDS iteratively (SMACOF, an iterative
+    stress-minimisation method closely related to gradient descent).
+    &quot;&quot;&quot;
+    D = iso.dist_matrix_
+    mds = MDS(n_components=n_components, dissimilarity=&quot;precomputed&quot;, metric=True,
+              n_init=4, max_iter=1000, random_state=seed, normalized_stress=&quot;auto&quot;)
+    Z = mds.fit_transform(D)
+    return mds, Z</code></pre></details>
+  <details class="code"><summary><code>compare_embeddings</code> and <code>residual_variance</code></summary><pre><code class="language-python">def residual_variance(D_target, Z):
+    &quot;&quot;&quot;1 - R^2 between the target distances and the distances in the embedding
+    (the measure used in the original ISOMAP paper; lower is better).&quot;&quot;&quot;
+    d_emb = pdist(Z)
+    d_tgt = squareform(D_target, checks=False)
+    r = np.corrcoef(d_tgt, d_emb)[0, 1]
+    return float(1 - r ** 2)
+
+
+def compare_embeddings(X, y, embeddings, k_eval=5):
+    &quot;&quot;&quot;
+    Score 2-D embeddings on
+      - LOO k-NN accuracy (can the species still be classified?)
+      - Fisher ratio (how tight and separated are the clusters?)
+      - trustworthiness (are the 2-D neighbours real neighbours in 4-D?)
+      - residual variance against Euclidean and against geodesic distances.
+    &quot;&quot;&quot;
+    D_euc = squareform(pdist(X))
+    iso_geo = Isomap(n_neighbors=3, n_components=2).fit(X).dist_matrix_
+    out = {}
+    for name, Z in embeddings.items():
+        out[name] = {&quot;loo_knn&quot;: loo_knn_accuracy(Z, y, k_eval),
+                     &quot;fisher&quot;: fisher_ratio(Z, y),
+                     &quot;trustworthiness&quot;: float(trustworthiness(X, Z, n_neighbors=k_eval)),
+                     &quot;resid_var_euclid&quot;: residual_variance(D_euc, Z),
+                     &quot;resid_var_geodesic&quot;: residual_variance(iso_geo, Z)}
+    return out</code></pre></details>
+</section>
+
+<!-- ================================================================ CODE -->
+<section class="part" id="code">
+  <span class="part-label">Code</span>
+  <h2>Python code</h2>
+  <p>Two files. <code class="inline">pca_iris.py</code> holds every computation used above. <code class="inline">make_figures.py</code> runs them, draws every figure on this page and writes
+    <code class="inline">results.json</code>. Run <code class="inline">python3 make_figures.py</code> with <code class="inline">bezdekIris.data</code> (from the UCI Iris archive) in the same folder.
+    Source files: <a href="code/pca_iris.py">pca_iris.py</a> · <a href="code/make_figures.py">make_figures.py</a> · <a href="code/results.json">results.json</a>.</p>
+  <details class="code"><summary><code>pca_iris.py</code>: complete module</summary><pre><code class="language-python">&quot;&quot;&quot;
+SYDE 572 - Assignment 3
+PCA by hand, marginal views of Iris, PCA, data compression and Isomap.
+
+Functions
+    pca_by_hand             Part 1  (the 5-point dataset)
+    load_iris_uci           Parts 2 to 5
+    marginal_separability   Part 2  (how well each feature subset separates the species)
+    pca_svd                 Part 3  (PCA from the SVD of the centred data matrix)
+    variance_explained      Part 4  (Frobenius norm and explained variance)
+    isomap_embedding        Part 5  (ISOMAP with k nearest neighbours)
+    compare_embeddings      Part 5  (PCA vs ISOMAP: compression and classification)
+&quot;&quot;&quot;
+import itertools
+import os
+
+import numpy as np
+from scipy.sparse.csgraph import connected_components, shortest_path
+from scipy.spatial.distance import pdist, squareform
+from sklearn.decomposition import PCA
+from sklearn.manifold import MDS, Isomap, trustworthiness
+from sklearn.model_selection import LeaveOneOut, cross_val_score
+from sklearn.neighbors import KNeighborsClassifier, kneighbors_graph
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(HERE, &quot;bezdekIris.data&quot;)
+FEATURES = [&quot;sepal length&quot;, &quot;sepal width&quot;, &quot;petal length&quot;, &quot;petal width&quot;]
+SPECIES = [&quot;setosa&quot;, &quot;versicolor&quot;, &quot;virginica&quot;]
+
+
+# ================================================================ Part 1 ====
+def pca_by_hand(X=None, queries=((3, 3), (3, 4))):
+    &quot;&quot;&quot;
+    First principal component of a small 2-D dataset and the L2
+    reconstruction error of new points, following the hand calculation:
+      1. centre the data with the sample mean
+      2. covariance matrix S = (1/N) Xc^T Xc
+      3. first PC = unit eigenvector of S with the largest eigenvalue
+      4. a point p is reconstructed as  mu + ((p - mu) . w) w
+    &quot;&quot;&quot;
+    if X is None:
+        X = np.array([[-2, -1], [-1, 0], [0, 1], [1, 2], [2, 3]], dtype=float)
+    mu = X.mean(axis=0)
+    Xc = X - mu
+    S = Xc.T @ Xc / len(X)
+    evals, evecs = np.linalg.eigh(S)            # ascending order
+    w = evecs[:, -1]
+    w = w * np.sign(w[np.argmax(np.abs(w))])    # fix the sign so the largest entry is positive
+    out = {&quot;mean&quot;: mu, &quot;S&quot;: S, &quot;eigenvalues&quot;: evals[::-1], &quot;w1&quot;: w, &quot;queries&quot;: []}
+    for q in queries:
+        p = np.asarray(q, dtype=float)
+        z = (p - mu) @ w                        # 1-D code (coordinate along the PC)
+        p_hat = mu + z * w                      # reconstruction
+        out[&quot;queries&quot;].append({&quot;point&quot;: p, &quot;centred&quot;: p - mu, &quot;z&quot;: z, &quot;recon&quot;: p_hat,
+                               &quot;residual&quot;: p - p_hat, &quot;error&quot;: float(np.linalg.norm(p - p_hat))})
+    return out
+
+
+# ============================================================ Iris data ====
+def load_iris_uci(path=DATA_FILE):
+    &quot;&quot;&quot;
+    Read the UCI Iris file (comma separated: 4 measurements in cm, species).
+    bezdekIris.data is the corrected file in the UCI archive; it matches
+    Fisher&#x27;s published table (samples 35 and 38 are fixed).
+    &quot;&quot;&quot;
+    X, y = [], []
+    with open(path) as fh:
+        for line in fh:
+            parts = line.strip().split(&quot;,&quot;)
+            if len(parts) != 5:
+                continue
+            X.append([float(v) for v in parts[:4]])
+            y.append(SPECIES.index(parts[4].replace(&quot;Iris-&quot;, &quot;&quot;)))
+    return np.array(X), np.array(y)
+
+
+# ================================================================ Part 2 ====
+def loo_knn_accuracy(Z, y, k=5):
+    &quot;&quot;&quot;Leave-one-out accuracy of a k-NN classifier: a simple measure of how
+    well separated the classes are in the representation Z.&quot;&quot;&quot;
+    clf = KNeighborsClassifier(n_neighbors=k)
+    return float(cross_val_score(clf, Z, y, cv=LeaveOneOut()).mean())
+
+
+def fisher_ratio(Z, y):
+    &quot;&quot;&quot;Between-class scatter / within-class scatter (trace ratio).
+    Large values mean tight, well separated clusters.&quot;&quot;&quot;
+    mu = Z.mean(axis=0)
+    sb = sum((y == c).sum() * np.sum((Z[y == c].mean(axis=0) - mu) ** 2) for c in np.unique(y))
+    sw = sum(np.sum((Z[y == c] - Z[y == c].mean(axis=0)) ** 2) for c in np.unique(y))
+    return float(sb / sw)
+
+
+def marginal_separability(X, y, k=5):
+    &quot;&quot;&quot;Score every subset of 1 to 4 features (the marginal views).&quot;&quot;&quot;
+    rows = []
+    for r in (1, 2, 3, 4):
+        for idx in itertools.combinations(range(X.shape[1]), r):
+            Z = X[:, idx]
+            rows.append({&quot;features&quot;: [FEATURES[i] for i in idx], &quot;idx&quot;: list(idx),
+                         &quot;loo_knn&quot;: loo_knn_accuracy(Z, y, k), &quot;fisher&quot;: fisher_ratio(Z, y)})
+    return rows
+
+
+# ================================================================ Part 3 ====
+def pca_svd(X):
+    &quot;&quot;&quot;
+    PCA from the SVD of the centred data matrix  Xc = U Sigma V^T.
+    Rows of V^T are the principal axes; Xc V are the scores;
+    the variance along PC i is sigma_i^2 / (N - 1).
+    &quot;&quot;&quot;
+    mu = X.mean(axis=0)
+    Xc = X - mu
+    U, s, Vt = np.linalg.svd(Xc, full_matrices=False)
+    # same sign convention as scikit-learn (largest |loading| of each axis positive)
+    signs = np.sign(Vt[np.arange(len(s)), np.argmax(np.abs(Vt), axis=1)])
+    Vt = Vt * signs[:, None]
+    scores = Xc @ Vt.T
+    return {&quot;mean&quot;: mu, &quot;singular_values&quot;: s, &quot;components&quot;: Vt, &quot;scores&quot;: scores,
+            &quot;variance&quot;: s ** 2 / (len(X) - 1)}
+
+
+def pca_sklearn(X, n_components=None):
+    &quot;&quot;&quot;The same decomposition with scikit-learn, used as a check.&quot;&quot;&quot;
+    p = PCA(n_components=n_components).fit(X)
+    return p, p.transform(X)
+
+
+# ================================================================ Part 4 ====
+def variance_explained(X):
+    &quot;&quot;&quot;
+    For a centred matrix Xc,  ||Xc||_F^2 = trace(Xc^T Xc) = sum_i sigma_i^2,
+    which is (N - 1) times the total variance.  Keeping k PCs leaves the
+    reconstruction error  ||Xc - Xc V_k V_k^T||_F^2 = sum_{i&gt;k} sigma_i^2,
+    so the fraction of variance explained by k PCs is
+        sum_{i&lt;=k} sigma_i^2 / ||Xc||_F^2.
+    &quot;&quot;&quot;
+    Xc = X - X.mean(axis=0)
+    fro2 = float(np.sum(Xc ** 2))
+    s = np.linalg.svd(Xc, compute_uv=False)
+    Vt = np.linalg.svd(Xc, full_matrices=False)[2]
+    ratio = s ** 2 / fro2
+    recon = []
+    for k in range(len(s) + 1):
+        Vk = Vt[:k].T
+        R = Xc - Xc @ Vk @ Vk.T
+        recon.append(float(np.sum(R ** 2)))
+    cum = np.cumsum(ratio)
+    return {&quot;fro2&quot;: fro2, &quot;singular_values&quot;: s, &quot;sigma2&quot;: s ** 2, &quot;ratio&quot;: ratio,
+            &quot;cumulative&quot;: cum, &quot;recon_error_fro2&quot;: recon,
+            &quot;pcs_for_50&quot;: int(np.searchsorted(cum, 0.5) + 1),
+            &quot;pcs_for_95&quot;: int(np.searchsorted(cum, 0.95) + 1)}
+
+
+# ================================================================ Part 5 ====
+def knn_graph_components(X, k=3):
+    &quot;&quot;&quot;Number of connected pieces of the (symmetrised) k-NN graph.&quot;&quot;&quot;
+    G = kneighbors_graph(X, k, mode=&quot;distance&quot;)
+    n, labels = connected_components(G, directed=False)
+    return n, labels
+
+
+def isomap_embedding(X, k=3, n_components=2):
+    &quot;&quot;&quot;
+    ISOMAP: k-NN graph -&gt; geodesic (shortest-path) distances -&gt; MDS.
+    scikit-learn&#x27;s Isomap performs the final MDS step in closed form
+    (classical MDS = eigendecomposition of the double-centred squared
+    geodesic distances).  If the k-NN graph is disconnected it joins the
+    pieces with their shortest Euclidean edge before computing paths.
+    &quot;&quot;&quot;
+    iso = Isomap(n_neighbors=k, n_components=n_components)
+    Z = iso.fit_transform(X)
+    return iso, Z
+
+
+def isomap_smacof(iso, n_components=2, seed=0):
+    &quot;&quot;&quot;
+    The variant described in the handout: take the geodesic distance matrix
+    computed by Isomap and fit metric MDS iteratively (SMACOF, an iterative
+    stress-minimisation method closely related to gradient descent).
+    &quot;&quot;&quot;
+    D = iso.dist_matrix_
+    mds = MDS(n_components=n_components, dissimilarity=&quot;precomputed&quot;, metric=True,
+              n_init=4, max_iter=1000, random_state=seed, normalized_stress=&quot;auto&quot;)
+    Z = mds.fit_transform(D)
+    return mds, Z
+
+
+def residual_variance(D_target, Z):
+    &quot;&quot;&quot;1 - R^2 between the target distances and the distances in the embedding
+    (the measure used in the original ISOMAP paper; lower is better).&quot;&quot;&quot;
+    d_emb = pdist(Z)
+    d_tgt = squareform(D_target, checks=False)
+    r = np.corrcoef(d_tgt, d_emb)[0, 1]
+    return float(1 - r ** 2)
+
+
+def compare_embeddings(X, y, embeddings, k_eval=5):
+    &quot;&quot;&quot;
+    Score 2-D embeddings on
+      - LOO k-NN accuracy (can the species still be classified?)
+      - Fisher ratio (how tight and separated are the clusters?)
+      - trustworthiness (are the 2-D neighbours real neighbours in 4-D?)
+      - residual variance against Euclidean and against geodesic distances.
+    &quot;&quot;&quot;
+    D_euc = squareform(pdist(X))
+    iso_geo = Isomap(n_neighbors=3, n_components=2).fit(X).dist_matrix_
+    out = {}
+    for name, Z in embeddings.items():
+        out[name] = {&quot;loo_knn&quot;: loo_knn_accuracy(Z, y, k_eval),
+                     &quot;fisher&quot;: fisher_ratio(Z, y),
+                     &quot;trustworthiness&quot;: float(trustworthiness(X, Z, n_neighbors=k_eval)),
+                     &quot;resid_var_euclid&quot;: residual_variance(D_euc, Z),
+                     &quot;resid_var_geodesic&quot;: residual_variance(iso_geo, Z)}
+    return out
+
+
+if __name__ == &quot;__main__&quot;:
+    h = pca_by_hand()
+    print(&quot;first PC:&quot;, h[&quot;w1&quot;], &quot; eigenvalues:&quot;, h[&quot;eigenvalues&quot;])
+    for q in h[&quot;queries&quot;]:
+        print(q[&quot;point&quot;], &quot;-&gt; recon&quot;, q[&quot;recon&quot;], &quot; error&quot;, round(q[&quot;error&quot;], 6))
+    X, y = load_iris_uci()
+    v = variance_explained(X)
+    print(&quot;explained variance ratio:&quot;, np.round(v[&quot;ratio&quot;], 4), &quot; cumulative:&quot;, np.round(v[&quot;cumulative&quot;], 4))
+    print(&quot;PCs needed for 50%:&quot;, v[&quot;pcs_for_50&quot;])
+    print(&quot;k-NN graph components (k=3):&quot;, knn_graph_components(X, 3)[0])
+</code></pre></details>
+  <details class="code"><summary><code>make_figures.py</code>: experiments and figures</summary><pre><code class="language-python">&quot;&quot;&quot;
+SYDE 572 - Assignment 3
+Runs every computation, saves every figure on the project page to ../media/
+and writes results.json with all the numbers quoted in the write-up.
+
+    python3 make_figures.py
+&quot;&quot;&quot;
+import json
+import os
+import warnings
+
+import numpy as np
+import matplotlib
+matplotlib.use(&quot;Agg&quot;)
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from scipy.spatial.distance import cdist
+
+from pca_iris import (FEATURES, SPECIES, pca_by_hand, load_iris_uci, marginal_separability,
+                      loo_knn_accuracy, fisher_ratio, pca_svd, pca_sklearn, variance_explained,
+                      knn_graph_components, isomap_embedding, isomap_smacof, compare_embeddings)
+from sklearn.neighbors import kneighbors_graph
+
+warnings.filterwarnings(&quot;ignore&quot;)
+HERE = os.path.dirname(os.path.abspath(__file__))
+MEDIA = os.path.join(HERE, &quot;..&quot;, &quot;media&quot;)
+os.makedirs(MEDIA, exist_ok=True)
+
+# ---------------------------------------------------------------- style ----
+INK = &quot;#1d2330&quot;
+MUTED = &quot;#6b6f7a&quot;
+GRID = &quot;#e6e4df&quot;
+SURFACE = &quot;#fcfcfb&quot;
+BLUE = &quot;#2a78d6&quot;
+ORANGE = &quot;#eb6834&quot;
+VIOLET = &quot;#4a3aa7&quot;
+AQUA = &quot;#1baf7a&quot;
+RED = &quot;#e34948&quot;
+LIGHT = &quot;#c9c6bf&quot;
+SP_COL = [AQUA, BLUE, ORANGE]          # setosa, versicolor, virginica
+
+plt.rcParams.update({
+    &quot;font.family&quot;: [&quot;Inter&quot;, &quot;Avenir Next&quot;, &quot;DejaVu Sans&quot;],
+    &quot;mathtext.fontset&quot;: &quot;stixsans&quot;,
+    &quot;font.size&quot;: 10.5,
+    &quot;axes.titlesize&quot;: 12,
+    &quot;axes.titleweight&quot;: &quot;semibold&quot;,
+    &quot;axes.titlelocation&quot;: &quot;left&quot;,
+    &quot;axes.titlepad&quot;: 10,
+    &quot;axes.labelcolor&quot;: INK,
+    &quot;axes.edgecolor&quot;: LIGHT,
+    &quot;axes.linewidth&quot;: 0.8,
+    &quot;axes.facecolor&quot;: SURFACE,
+    &quot;figure.facecolor&quot;: SURFACE,
+    &quot;axes.grid&quot;: True,
+    &quot;grid.color&quot;: GRID,
+    &quot;grid.linewidth&quot;: 0.7,
+    &quot;axes.spines.top&quot;: False,
+    &quot;axes.spines.right&quot;: False,
+    &quot;xtick.color&quot;: MUTED,
+    &quot;ytick.color&quot;: MUTED,
+    &quot;text.color&quot;: INK,
+    &quot;legend.frameon&quot;: False,
+    &quot;legend.fontsize&quot;: 9.5,
+    &quot;savefig.dpi&quot;: 200,
+    &quot;savefig.bbox&quot;: &quot;tight&quot;,
+    &quot;savefig.facecolor&quot;: SURFACE,
+})
+
+
+def save(fig, name):
+    fig.savefig(os.path.join(MEDIA, name))
+    plt.close(fig)
+    print(&quot;saved&quot;, name)
+
+
+def species_legend(ax, loc=&quot;best&quot;, **kw):
+    handles = [Line2D([], [], marker=&quot;o&quot;, ls=&quot;&quot;, color=c, ms=7, label=s) for s, c in zip(SPECIES, SP_COL)]
+    ax.legend(handles=handles, loc=loc, **kw)
+
+
+def scatter_species(ax, A, B, y, s=22, alpha=0.85):
+    for c in range(3):
+        ax.scatter(A[y == c], B[y == c], s=s, color=SP_COL[c], alpha=alpha, edgecolor=&quot;white&quot;, lw=0.5)
+
+
+def style3d(ax):
+    ax.xaxis.pane.set_facecolor(SURFACE)
+    ax.yaxis.pane.set_facecolor(SURFACE)
+    ax.zaxis.pane.set_facecolor(SURFACE)
+    for a in (ax.xaxis, ax.yaxis, ax.zaxis):
+        a.pane.set_edgecolor(GRID)
+        a._axinfo[&quot;grid&quot;][&quot;color&quot;] = GRID
+    ax.tick_params(colors=MUTED, labelsize=8.5)
+
+
+R = {}
+
+# ================================================================ Part 1 ====
+h = pca_by_hand()
+R[&quot;p1&quot;] = {&quot;mean&quot;: h[&quot;mean&quot;].tolist(), &quot;S&quot;: h[&quot;S&quot;].tolist(), &quot;eigenvalues&quot;: h[&quot;eigenvalues&quot;].tolist(),
+           &quot;w1&quot;: h[&quot;w1&quot;].tolist(),
+           &quot;queries&quot;: [{k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in q.items()} for q in h[&quot;queries&quot;]]}
+X5 = np.array([[-2, -1], [-1, 0], [0, 1], [1, 2], [2, 3]], dtype=float)
+mu, w = h[&quot;mean&quot;], h[&quot;w1&quot;]
+
+fig, ax = plt.subplots(figsize=(6.6, 5.6))
+t = np.linspace(-4.2, 6.2, 2)
+ax.plot(mu[0] + t * w[0], mu[1] + t * w[1], color=VIOLET, lw=2, label=&quot;first PC through the mean&quot;)
+ax.annotate(&quot;&quot;, xy=mu + 1.6 * w, xytext=mu, arrowprops=dict(arrowstyle=&quot;-|&gt;&quot;, color=VIOLET, lw=2.4))
+ax.text(*(mu + 1.6 * w + np.array([-3.3, 0.35])), r&quot;$\mathbf{w}_1=(\frac{1}{\sqrt{2}},\frac{1}{\sqrt{2}})$&quot;,
+        color=VIOLET, fontsize=10)
+ax.scatter(X5[:, 0], X5[:, 1], s=60, color=BLUE, zorder=4, label=&quot;data points&quot;, edgecolor=&quot;white&quot;)
+ax.scatter(*mu, s=110, marker=&quot;X&quot;, color=INK, zorder=5, label=r&quot;mean $\boldsymbol{\mu}=(0,1)$&quot;)
+q1, q2 = h[&quot;queries&quot;]
+ax.scatter(*q1[&quot;point&quot;], s=80, color=ORANGE, zorder=6, edgecolor=&quot;white&quot;)
+ax.scatter(*q1[&quot;recon&quot;], s=60, facecolor=&quot;white&quot;, edgecolor=ORANGE, lw=2, zorder=6)
+ax.plot([q1[&quot;point&quot;][0], q1[&quot;recon&quot;][0]], [q1[&quot;point&quot;][1], q1[&quot;recon&quot;][1]], color=ORANGE, ls=&quot;--&quot;, lw=1.8)
+ax.annotate(&quot;(3, 3)&quot;, q1[&quot;point&quot;], textcoords=&quot;offset points&quot;, xytext=(10, -4), color=ORANGE, fontsize=10, weight=&quot;semibold&quot;)
+ax.annotate(&quot;reconstruction (2.5, 3.5)\nerror = √0.5 ≈ 0.707&quot;, q1[&quot;recon&quot;], textcoords=&quot;offset points&quot;,
+            xytext=(14, -62), color=ORANGE, fontsize=9.3)
+ax.scatter(*q2[&quot;point&quot;], s=90, color=RED, zorder=7, edgecolor=&quot;white&quot;, marker=&quot;D&quot;)
+ax.annotate(&quot;(3, 4) lies on the PC line\nerror = 0&quot;, q2[&quot;point&quot;], textcoords=&quot;offset points&quot;, xytext=(12, 4),
+            color=RED, fontsize=9.3, weight=&quot;semibold&quot;)
+ax.set_aspect(&quot;equal&quot;)
+ax.set_xlim(-3.5, 6.3)
+ax.set_ylim(-2.5, 5.5)
+ax.set_xlabel(&quot;$x_1$&quot;)
+ax.set_ylabel(&quot;$x_2$&quot;)
+ax.set_title(&quot;Part 1: first principal component and reconstructions&quot;)
+ax.legend(loc=&quot;lower right&quot;, fontsize=9)
+save(fig, &quot;p1_by_hand.png&quot;)
+
+# ================================================================ Part 2 ====
+X, y = load_iris_uci()
+R[&quot;n&quot;] = int(len(X))
+R[&quot;class_counts&quot;] = np.bincount(y).tolist()
+R[&quot;feature_mean&quot;] = dict(zip(FEATURES, X.mean(0).round(4).tolist()))
+R[&quot;feature_var&quot;] = dict(zip(FEATURES, X.var(0, ddof=1).round(4).tolist()))
+R[&quot;class_means&quot;] = {SPECIES[c]: X[y == c].mean(0).round(3).tolist() for c in range(3)}
+R[&quot;class_ranges&quot;] = {SPECIES[c]: {&quot;min&quot;: X[y == c].min(0).tolist(), &quot;max&quot;: X[y == c].max(0).tolist()} for c in range(3)}
+sep = marginal_separability(X, y)
+R[&quot;p2_separability&quot;] = sep
+acc = {tuple(r[&quot;idx&quot;]): r for r in sep}
+
+# 1 feature
+fig, axes = plt.subplots(1, 4, figsize=(14, 3.6), gridspec_kw={&quot;wspace&quot;: 0.25})
+for j, ax in enumerate(axes):
+    bins = np.linspace(X[:, j].min() - 0.05, X[:, j].max() + 0.05, 26)
+    for c in range(3):
+        ax.hist(X[y == c, j], bins=bins, color=SP_COL[c], alpha=0.55, label=SPECIES[c])
+    ax.set_xlabel(f&quot;{FEATURES[j]} (cm)&quot;)
+    a = acc[(j,)]
+    ax.set_title(f&quot;{FEATURES[j]}\n5-NN acc. {a[&#x27;loo_knn&#x27;] * 100:.1f}%  ·  J = {a[&#x27;fisher&#x27;]:.2f}&quot;, fontsize=11)
+    if j == 0:
+        ax.set_ylabel(&quot;number of flowers&quot;)
+axes[0].legend(loc=&quot;upper right&quot;, fontsize=8.5)
+save(fig, &quot;p2_1d.png&quot;)
+
+# 2 features
+pairs = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
+fig, axes = plt.subplots(2, 3, figsize=(13.5, 8.2), gridspec_kw={&quot;wspace&quot;: 0.25, &quot;hspace&quot;: 0.38})
+for (i, j), ax in zip(pairs, axes.ravel()):
+    scatter_species(ax, X[:, i], X[:, j], y)
+    a = acc[(i, j)]
+    ax.set_xlabel(f&quot;{FEATURES[i]} (cm)&quot;)
+    ax.set_ylabel(f&quot;{FEATURES[j]} (cm)&quot;)
+    ax.set_title(f&quot;5-NN acc. {a[&#x27;loo_knn&#x27;] * 100:.1f}%  ·  J = {a[&#x27;fisher&#x27;]:.2f}&quot;, fontsize=11)
+species_legend(axes[0, 0], loc=&quot;upper right&quot;, fontsize=8.5)
+save(fig, &quot;p2_2d.png&quot;)
+
+# 3 features
+triples = [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]
+fig = plt.figure(figsize=(12.5, 10))
+for n, (i, j, k) in enumerate(triples):
+    ax = fig.add_subplot(2, 2, n + 1, projection=&quot;3d&quot;)
+    for c in range(3):
+        m = y == c
+        ax.scatter(X[m, i], X[m, j], X[m, k], s=16, color=SP_COL[c], alpha=0.85, depthshade=False)
+    ax.set_xlabel(FEATURES[i], fontsize=9)
+    ax.set_ylabel(FEATURES[j], fontsize=9)
+    ax.set_zlabel(FEATURES[k], fontsize=9)
+    a = acc[(i, j, k)]
+    ax.set_title(f&quot;{FEATURES[i]} · {FEATURES[j]} · {FEATURES[k]}\n5-NN acc. {a[&#x27;loo_knn&#x27;] * 100:.1f}%  ·  J = {a[&#x27;fisher&#x27;]:.2f}&quot;,
+                 fontsize=10.5, loc=&quot;left&quot;)
+    ax.view_init(elev=20, azim=-55)
+    style3d(ax)
+    if n == 0:
+        species_legend(ax, loc=&quot;upper left&quot;, fontsize=8.5)
+fig.subplots_adjust(wspace=0.05, hspace=0.12)
+save(fig, &quot;p2_3d.png&quot;)
+
+# separability summary
+srt = sorted(sep, key=lambda r: (r[&quot;fisher&quot;]))
+fig, axes = plt.subplots(1, 2, figsize=(12.5, 5.6), sharey=True, gridspec_kw={&quot;wspace&quot;: 0.06})
+labels = [&quot; + &quot;.join(f.replace(&quot;sepal &quot;, &quot;S.&quot;).replace(&quot;petal &quot;, &quot;P.&quot;) for f in r[&quot;features&quot;]) for r in srt]
+ncol = {1: BLUE, 2: VIOLET, 3: AQUA, 4: INK}
+cols = [ncol[len(r[&quot;idx&quot;])] for r in srt]
+yy = np.arange(len(srt))
+axes[0].barh(yy, [r[&quot;fisher&quot;] for r in srt], color=cols, height=0.65)
+for i, r in enumerate(srt):
+    axes[0].text(r[&quot;fisher&quot;] + 0.2, i, f&quot;{r[&#x27;fisher&#x27;]:.2f}&quot;, va=&quot;center&quot;, fontsize=8.5)
+axes[0].set_yticks(yy)
+axes[0].set_yticklabels(labels, fontsize=9)
+axes[0].set_xlabel(&quot;Fisher ratio J = between-class / within-class scatter&quot;)
+axes[0].set_title(&quot;Cluster separation of every marginal view&quot;)
+axes[0].grid(axis=&quot;y&quot;, visible=False)
+axes[1].barh(yy, [r[&quot;loo_knn&quot;] * 100 for r in srt], color=cols, height=0.65)
+for i, r in enumerate(srt):
+    axes[1].text(r[&quot;loo_knn&quot;] * 100 + 0.4, i, f&quot;{r[&#x27;loo_knn&#x27;] * 100:.1f}%&quot;, va=&quot;center&quot;, fontsize=8.5)
+axes[1].set_xlim(50, 103)
+axes[1].set_xlabel(&quot;leave-one-out 5-NN accuracy (%)&quot;)
+axes[1].set_title(&quot;Classification accuracy&quot;)
+axes[1].grid(axis=&quot;y&quot;, visible=False)
+axes[1].legend(handles=[Line2D([], [], color=c, lw=8, label=f&quot;{k} feature{&#x27;s&#x27; if k &gt; 1 else &#x27;&#x27;}&quot;) for k, c in ncol.items()],
+               loc=&quot;lower right&quot;, fontsize=9)
+save(fig, &quot;p2_separability.png&quot;)
+
+# ================================================================ Part 3 ====
+P = pca_svd(X)
+skp, S_sk = pca_sklearn(X)
+R[&quot;p3&quot;] = {&quot;components&quot;: P[&quot;components&quot;].tolist(), &quot;singular_values&quot;: P[&quot;singular_values&quot;].tolist(),
+           &quot;variance&quot;: P[&quot;variance&quot;].tolist(), &quot;mean&quot;: P[&quot;mean&quot;].tolist(),
+           &quot;sklearn_components&quot;: skp.components_.tolist(),
+           &quot;sklearn_explained_variance&quot;: skp.explained_variance_.tolist(),
+           &quot;max_abs_diff_vs_sklearn&quot;: float(np.abs(P[&quot;scores&quot;] - S_sk).max()),
+           &quot;knn_pc1&quot;: loo_knn_accuracy(P[&quot;scores&quot;][:, :1], y), &quot;knn_pc12&quot;: loo_knn_accuracy(P[&quot;scores&quot;][:, :2], y),
+           &quot;knn_pc123&quot;: loo_knn_accuracy(P[&quot;scores&quot;][:, :3], y), &quot;knn_raw&quot;: loo_knn_accuracy(X, y),
+           &quot;fisher_pc1&quot;: fisher_ratio(P[&quot;scores&quot;][:, :1], y), &quot;fisher_pc12&quot;: fisher_ratio(P[&quot;scores&quot;][:, :2], y),
+           &quot;fisher_pc123&quot;: fisher_ratio(P[&quot;scores&quot;][:, :3], y),
+           &quot;pc1_class_ranges&quot;: {SPECIES[c]: [float(P[&quot;scores&quot;][y == c, 0].min()), float(P[&quot;scores&quot;][y == c, 0].max())] for c in range(3)}}
+Xs = (X - X.mean(0)) / X.std(0, ddof=1)
+Ps = pca_svd(Xs)
+R[&quot;p3_standardised&quot;] = {&quot;components&quot;: Ps[&quot;components&quot;].tolist(),
+                        &quot;ratio&quot;: (Ps[&quot;singular_values&quot;] ** 2 / np.sum(Ps[&quot;singular_values&quot;] ** 2)).tolist(),
+                        &quot;knn_pc12&quot;: loo_knn_accuracy(Ps[&quot;scores&quot;][:, :2], y)}
+Z = P[&quot;scores&quot;]
+ev = P[&quot;variance&quot;] / P[&quot;variance&quot;].sum()
+
+# PC1 only
+fig, axes = plt.subplots(2, 1, figsize=(10, 4.8), sharex=True, gridspec_kw={&quot;height_ratios&quot;: [2.2, 1], &quot;hspace&quot;: 0.08})
+bins = np.linspace(Z[:, 0].min() - 0.1, Z[:, 0].max() + 0.1, 36)
+for c in range(3):
+    axes[0].hist(Z[y == c, 0], bins=bins, color=SP_COL[c], alpha=0.6, label=SPECIES[c])
+axes[0].set_ylabel(&quot;number of flowers&quot;)
+axes[0].set_title(f&quot;Marginalised on PC1 only ({ev[0] * 100:.1f}% of the variance): &quot;
+                  f&quot;5-NN acc. {R[&#x27;p3&#x27;][&#x27;knn_pc1&#x27;] * 100:.1f}%&quot;)
+axes[0].legend(loc=&quot;upper right&quot;)
+rng = np.random.default_rng(0)
+for c in range(3):
+    axes[1].scatter(Z[y == c, 0], rng.uniform(-0.4, 0.4, (y == c).sum()) - c, s=14, color=SP_COL[c], alpha=0.8)
+axes[1].set_yticks([0, -1, -2])
+axes[1].set_yticklabels(SPECIES, fontsize=9)
+axes[1].set_xlabel(&quot;PC1 score (cm)&quot;)
+axes[1].grid(axis=&quot;y&quot;, visible=False)
+save(fig, &quot;p3_pc1.png&quot;)
+
+# PC1-PC2 with loadings
+fig, ax = plt.subplots(figsize=(8.6, 5.6))
+scatter_species(ax, Z[:, 0], Z[:, 1], y, s=26)
+scale = 1.8
+for j in range(4):
+    v = P[&quot;components&quot;][:2, j] * scale
+    ax.annotate(&quot;&quot;, xy=v, xytext=(0, 0), arrowprops=dict(arrowstyle=&quot;-|&gt;&quot;, color=INK, lw=1.4, alpha=0.75))
+    off = {0: (0.08, 0.12), 1: (-0.25, 0.18), 2: (0.1, -0.22), 3: (0.12, -0.08)}[j]
+    ax.text(v[0] + off[0], v[1] + off[1], FEATURES[j], fontsize=9, color=INK)
+ax.set_xlabel(f&quot;PC1 ({ev[0] * 100:.1f}% of variance)&quot;)
+ax.set_ylabel(f&quot;PC2 ({ev[1] * 100:.1f}%)&quot;)
+ax.set_aspect(&quot;equal&quot;)
+ax.set_ylim(-1.45, 1.8)
+ax.set_title(f&quot;Marginalised on PC1 and PC2: 5-NN acc. {R[&#x27;p3&#x27;][&#x27;knn_pc12&#x27;] * 100:.1f}%&quot;)
+species_legend(ax, loc=&quot;upper left&quot;)
+ax.text(0.99, 0.02, f&quot;arrows: feature loadings × {scale}&quot;, transform=ax.transAxes, ha=&quot;right&quot;, fontsize=8.5, color=MUTED)
+save(fig, &quot;p3_pc2.png&quot;)
+
+# PC1-PC3 in 3-D
+fig = plt.figure(figsize=(12.5, 5.4))
+for n, (el, az) in enumerate([(22, -60), (8, 20)]):
+    ax = fig.add_subplot(1, 2, n + 1, projection=&quot;3d&quot;)
+    for c in range(3):
+        m = y == c
+        ax.scatter(Z[m, 0], Z[m, 1], Z[m, 2], s=16, color=SP_COL[c], alpha=0.85, depthshade=False)
+    ax.set_xlabel(&quot;PC1&quot;, fontsize=9)
+    ax.set_ylabel(&quot;PC2&quot;, fontsize=9)
+    ax.set_zlabel(&quot;PC3&quot;, fontsize=9)
+    ax.view_init(elev=el, azim=az)
+    style3d(ax)
+    ax.set_title((&quot;Marginalised on PC1, PC2, PC3: &quot; f&quot;5-NN acc. {R[&#x27;p3&#x27;][&#x27;knn_pc123&#x27;] * 100:.1f}%&quot;) if n == 0 else
+                 &quot;Same points, rotated&quot;, fontsize=11, loc=&quot;left&quot;)
+    if n == 0:
+        species_legend(ax, loc=&quot;upper left&quot;, fontsize=8.5)
+fig.subplots_adjust(wspace=0.02)
+save(fig, &quot;p3_pc3.png&quot;)
+
+# loadings heat map
+fig, ax = plt.subplots(figsize=(6.8, 3.6))
+C = P[&quot;components&quot;]
+im = ax.imshow(C, cmap=&quot;RdBu_r&quot;, vmin=-1, vmax=1, aspect=&quot;auto&quot;)
+for i in range(4):
+    for j in range(4):
+        ax.text(j, i, f&quot;{C[i, j]:+.3f}&quot;, ha=&quot;center&quot;, va=&quot;center&quot;, fontsize=9.5,
+                color=&quot;white&quot; if abs(C[i, j]) &gt; 0.55 else INK)
+ax.set_xticks(range(4))
+ax.set_xticklabels(FEATURES, fontsize=9)
+ax.set_yticks(range(4))
+ax.set_yticklabels([f&quot;PC{i + 1}  ({ev[i] * 100:.1f}%)&quot; for i in range(4)], fontsize=9)
+ax.grid(False)
+ax.set_title(&quot;Principal axes (rows are unit vectors)&quot;)
+fig.colorbar(im, ax=ax, fraction=0.04, pad=0.02)
+save(fig, &quot;p3_loadings.png&quot;)
+
+# ================================================================ Part 4 ====
+V = variance_explained(X)
+R[&quot;p4&quot;] = {k: (v.tolist() if isinstance(v, np.ndarray) else v) for k, v in V.items()}
+Vs = variance_explained(Xs)
+R[&quot;p4_standardised&quot;] = {&quot;ratio&quot;: Vs[&quot;ratio&quot;].tolist(), &quot;cumulative&quot;: Vs[&quot;cumulative&quot;].tolist(),
+                        &quot;pcs_for_50&quot;: Vs[&quot;pcs_for_50&quot;]}
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.4), gridspec_kw={&quot;wspace&quot;: 0.28})
+ax = axes[0]
+k = np.arange(1, 5)
+ax.bar(k, V[&quot;ratio&quot;] * 100, color=BLUE, width=0.6, label=&quot;variance of each PC&quot;)
+ax.plot(k, V[&quot;cumulative&quot;] * 100, &quot;-o&quot;, color=VIOLET, lw=2, ms=7, label=&quot;cumulative&quot;)
+for i in range(4):
+    ax.text(k[i], V[&quot;ratio&quot;][i] * 100 + 2, f&quot;{V[&#x27;ratio&#x27;][i] * 100:.2f}%&quot;, ha=&quot;center&quot;, fontsize=9, color=BLUE)
+    if i &gt; 0:
+        ax.text(k[i] + 0.08, V[&quot;cumulative&quot;][i] * 100 - 6, f&quot;{V[&#x27;cumulative&#x27;][i] * 100:.2f}%&quot;, fontsize=9, color=VIOLET)
+ax.axhline(50, color=RED, ls=&quot;--&quot;, lw=1.3)
+ax.text(4.45, 51.5, &quot;50%&quot;, color=RED, fontsize=9, ha=&quot;right&quot;)
+ax.scatter([2], [V[&quot;cumulative&quot;][1] * 100], s=230, facecolor=&quot;none&quot;, edgecolor=AQUA, lw=2.2, zorder=6)
+ax.annotate(&quot;2-D representation\n97.77%&quot;, (2, V[&quot;cumulative&quot;][1] * 100), textcoords=&quot;offset points&quot;,
+            xytext=(-20, -62), fontsize=9.5, color=AQUA, weight=&quot;semibold&quot;)
+ax.set_xticks(k)
+ax.set_xticklabels([f&quot;PC{i}&quot; for i in k])
+ax.set_ylim(0, 108)
+ax.set_ylabel(&quot;% of total variance&quot;)
+ax.set_title(&quot;Variance explained (scree plot)&quot;)
+ax.legend(loc=&quot;center right&quot;, bbox_to_anchor=(1.0, 0.3))
+
+ax = axes[1]
+kk = np.arange(0, 5)
+ax.plot(kk, V[&quot;recon_error_fro2&quot;], &quot;-o&quot;, color=ORANGE, lw=2, ms=7)
+for i in kk:
+    ax.annotate(f&quot;{V[&#x27;recon_error_fro2&#x27;][i]:.2f}&quot;, (i, V[&quot;recon_error_fro2&quot;][i]), textcoords=&quot;offset points&quot;,
+                xytext=(0, 9), ha=&quot;center&quot;, fontsize=9, color=ORANGE)
+ax.set_xticks(kk)
+ax.set_xlabel(&quot;number of PCs kept, k&quot;)
+ax.set_ylabel(r&quot;$\|X_c - X_c V_k V_k^\top\|_F^2$  (cm²)&quot;)
+ax.set_title(&quot;Reconstruction error = sum of discarded σᵢ²&quot;)
+ax.set_ylim(-40, 720)
+save(fig, &quot;p4_variance.png&quot;)
+
+# ================================================================ Part 5 ====
+ncomp, comp = knn_graph_components(X, 3)
+A = comp == 0
+B = ~A
+Dab = cdist(X[A], X[B])
+ia, ib = np.unravel_index(np.argmin(Dab), Dab.shape)
+bridge = (np.where(A)[0][ia], np.where(B)[0][ib], float(Dab[ia, ib]))
+R[&quot;p5_graph&quot;] = {&quot;components&quot;: int(ncomp), &quot;sizes&quot;: np.bincount(comp).tolist(),
+                 &quot;species_per_component&quot;: [np.bincount(y[comp == c], minlength=3).tolist() for c in range(ncomp)],
+                 &quot;bridge&quot;: [int(bridge[0]), int(bridge[1]), bridge[2]],
+                 &quot;bridge_points&quot;: [X[bridge[0]].tolist(), X[bridge[1]].tolist()]}
+
+iso3, Zi = isomap_embedding(X, 3)
+mds, Zm = isomap_smacof(iso3)
+emb = {&quot;PCA (2 PCs)&quot;: Z[:, :2], &quot;Isomap k=3&quot;: Zi, &quot;Isomap k=3 + SMACOF&quot;: Zm}
+for kk_ in (5, 10, 20):
+    emb[f&quot;Isomap k={kk_}&quot;] = isomap_embedding(X, kk_)[1]
+cmp_ = compare_embeddings(X, y, emb)
+R[&quot;p5_compare&quot;] = cmp_
+R[&quot;p5_isomap_recon_error&quot;] = float(iso3.reconstruction_error())
+R[&quot;p5_mds_stress&quot;] = float(mds.stress_)
+G = kneighbors_graph(X, 3).toarray()
+G = np.maximum(G, G.T)
+geo = iso3.dist_matrix_
+R[&quot;p5_geodesic&quot;] = {&quot;max&quot;: float(geo.max()), &quot;euclid_max&quot;: float(cdist(X, X).max()),
+                    &quot;setosa_to_virginica_mean_geo&quot;: float(geo[np.ix_(y == 0, y == 2)].mean()),
+                    &quot;setosa_to_virginica_mean_euc&quot;: float(cdist(X[y == 0], X[y == 2]).mean())}
+
+fig, axes = plt.subplots(2, 2, figsize=(12.5, 10), gridspec_kw={&quot;wspace&quot;: 0.22, &quot;hspace&quot;: 0.3})
+ax = axes[0, 0]
+ii, jj = np.nonzero(np.triu(G))
+for a_, b_ in zip(ii, jj):
+    ax.plot(Z[[a_, b_], 0], Z[[a_, b_], 1], color=LIGHT, lw=0.8, zorder=1)
+ax.plot(Z[[bridge[0], bridge[1]], 0], Z[[bridge[0], bridge[1]], 1], color=RED, lw=2.4, zorder=3)
+scatter_species(ax, Z[:, 0], Z[:, 1], y, s=18)
+ax.annotate(&quot;edge added to join\nthe two pieces&quot;, Z[[bridge[0], bridge[1]], :2].mean(0), textcoords=&quot;offset points&quot;,
+            xytext=(25, -55), fontsize=9, color=RED, arrowprops=dict(arrowstyle=&quot;-&quot;, color=RED, lw=1))
+ax.set_title(&quot;3-NN graph (drawn on PC1/PC2): 2 disconnected pieces&quot;, fontsize=11.5)
+ax.set_xlabel(&quot;PC1&quot;)
+ax.set_ylabel(&quot;PC2&quot;)
+species_legend(ax, loc=&quot;upper left&quot;, fontsize=8.5)
+
+panels = [(&quot;PCA (2 PCs)&quot;, &quot;PCA: PC1 vs PC2&quot;, (&quot;PC1&quot;, &quot;PC2&quot;)),
+          (&quot;Isomap k=3&quot;, &quot;ISOMAP, 3 nearest neighbours&quot;, (&quot;Isomap 1&quot;, &quot;Isomap 2&quot;)),
+          (&quot;Isomap k=3 + SMACOF&quot;, &quot;Same geodesic distances, iterative MDS&quot;, (&quot;MDS 1&quot;, &quot;MDS 2&quot;))]
+for ax, (key, title, (xl, yl)) in zip([axes[0, 1], axes[1, 0], axes[1, 1]], panels):
+    E = emb[key]
+    scatter_species(ax, E[:, 0], E[:, 1], y, s=22)
+    m = cmp_[key]
+    ax.set_title(f&quot;{title}\n5-NN acc. {m[&#x27;loo_knn&#x27;] * 100:.1f}%  ·  trustworthiness {m[&#x27;trustworthiness&#x27;]:.3f}&quot;, fontsize=11.5)
+    ax.set_xlabel(xl)
+    ax.set_ylabel(yl)
+save(fig, &quot;p5_isomap.png&quot;)
+
+# metric comparison
+names = list(cmp_.keys())
+fig, axes = plt.subplots(1, 3, figsize=(14, 4.2), sharey=True, gridspec_kw={&quot;wspace&quot;: 0.08})
+cols = [VIOLET] + [ORANGE, RED] + [BLUE] * 3
+yy = np.arange(len(names))[::-1]
+for ax, (key, lab, lo, hi, fmt) in zip(axes, [(&quot;loo_knn&quot;, &quot;leave-one-out 5-NN accuracy (%)&quot;, 88, 100, &quot;{:.1f}%&quot;),
+                                               (&quot;trustworthiness&quot;, &quot;trustworthiness (5 neighbours)&quot;, 0.90, 1.0, &quot;{:.3f}&quot;),
+                                               (&quot;resid_var_euclid&quot;, &quot;residual variance vs. Euclidean distances&quot;, 0, 0.06, &quot;{:.3f}&quot;)]):
+    vals = [cmp_[n][key] * (100 if key == &quot;loo_knn&quot; else 1) for n in names]
+    ax.barh(yy, vals, color=cols, height=0.62)
+    for yv, v in zip(yy, vals):
+        ax.text(v + (hi - lo) * 0.01, yv, fmt.format(v), va=&quot;center&quot;, fontsize=8.8)
+    ax.set_xlim(lo, hi + (hi - lo) * 0.14)
+    ax.set_xlabel(lab, fontsize=9.5)
+    ax.grid(axis=&quot;y&quot;, visible=False)
+axes[0].set_yticks(yy)
+axes[0].set_yticklabels(names, fontsize=9.5)
+axes[0].set_title(&quot;Classification&quot;)
+axes[1].set_title(&quot;Neighbourhood preservation&quot;)
+axes[2].set_title(&quot;Distance preservation (lower is better)&quot;)
+save(fig, &quot;p5_compare.png&quot;)
+
+with open(os.path.join(HERE, &quot;results.json&quot;), &quot;w&quot;) as fh:
+    json.dump(R, fh, indent=1, default=float)
+print(&quot;wrote results.json&quot;)
+</code></pre></details>
+</section>
+
+<!-- ================================================================ WRAP-UP -->
+<section class="part" id="conclusions">
+  <span class="part-label">Wrap-up</span>
+  <h2>Conclusions</h2>
+  <ul class="clean">
+    <li><b>Part 1.</b> The first PC is \(\mathbf w_1 = (1/\sqrt2,\ 1/\sqrt2)\) through the mean (0, 1). The reconstruction error is <b>√0.5 ≈ 0.707</b> for (3, 3) and <b>0</b> for (3, 4), which lies on the PC line.</li>
+    <li><b>Part 2.</b> Petal length, petal width and the petal pair give clean clusters. Setosa separates in every view with a petal feature; versicolor and virginica always overlap slightly. The sepal views barely cluster.</li>
+    <li><b>Part 3.</b> PC1 = (+0.361, −0.085, +0.857, +0.358) is an overall size axis dominated by petal length. PC2 = (+0.657, +0.730, −0.173, −0.075) is sepal size. Two PCs classify as well as all four features.</li>
+    <li><b>Part 4.</b> The 2-D representation explains <b>97.77%</b> of the variance. <b>One PC</b> is enough for 50% (it explains 92.46%).</li>
+    <li><b>Part 5.</b> ISOMAP with 3 neighbours produces a disconnected graph joined by one bridge edge. Its embedding classifies worse (92.7% vs 96.7%), preserves neighbourhoods
+      and distances worse, and cannot reconstruct the data. For Iris, linear PCA is the better choice.</li>
+  </ul>
+</section>
+</main>
+</div>
+
+<footer>SYDE 572 · Assignment 3 · Amin Ambike · Built with Python, NumPy, scikit-learn, Matplotlib and MathJax</footer>
+
+<script>
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href')));
+  const onScroll = () => {
+    let cur = 0;
+    targets.forEach((t, i) => { if (t && t.getBoundingClientRect().top < 120) cur = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === cur));
+  };
+  document.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  const expandAll = () => document.querySelectorAll('details').forEach(d => d.open = true);
+  window.addEventListener('beforeprint', expandAll);
+  if (location.search.includes('print')) expandAll();
+  window.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
+</script>
+</body>
+</html>
